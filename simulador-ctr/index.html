@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Simulador de CTR</title>
+
+<style>
+/* ===== VISUAL PADRÃO + BLINDADO CONTRA CSS DO TEMA (mesmo padrão das outras ferramentas) ===== */
+.ctr-only-tool * { box-sizing: border-box; }
+
+.ctr-only-tool{
+  font-family: Arial, sans-serif !important;
+  background:#f9f9f9 !important;
+  padding:20px !important;
+  color:#222 !important;
+}
+
+.ctr-only-tool .container{
+  max-width: 900px;
+  margin:auto;
+  background:#fff !important;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.06);
+  color:#222 !important;
+}
+
+.ctr-only-tool h1,.ctr-only-tool h2,.ctr-only-tool p,.ctr-only-tool label,.ctr-only-tool small,.ctr-only-tool footer,.ctr-only-tool li,.ctr-only-tool strong,.ctr-only-tool span{
+  color:#222 !important;
+}
+
+.ctr-only-tool h1{ margin:0 0 8px 0; }
+.ctr-only-tool p{ margin:0 0 18px 0; color:#333 !important; line-height:1.5; }
+
+.ctr-only-tool .grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+@media (max-width: 720px){
+  .ctr-only-tool .grid{ grid-template-columns:1fr; }
+}
+
+.ctr-only-tool .field{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.ctr-only-tool label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.ctr-only-tool input[type="number"]{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+  background:#fff !important;
+  color:#222 !important;
+  outline:none;
+}
+
+.ctr-only-tool input::placeholder{ color:#666 !important; }
+
+.ctr-only-tool .hint{
+  display:block;
+  margin-top:8px;
+  font-size:12.5px;
+  color:#666 !important;
+}
+
+.ctr-only-tool .actions{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+
+.ctr-only-tool button{
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.ctr-only-tool .btn-primary{
+  background:#007acc;
+  color:#fff !important;
+}
+.ctr-only-tool .btn-primary:hover{ background:#005fa3; }
+
+.ctr-only-tool .btn-ghost{
+  background:#f1f3f5;
+  color:#222 !important;
+}
+.ctr-only-tool .btn-ghost:hover{ background:#e9ecef; }
+
+.ctr-only-tool .result{
+  margin-top:20px;
+  background:#eef6ff !important;
+  border-left:5px solid #007acc;
+  padding:16px;
+  border-radius:10px;
+  color:#222 !important;
+  display:none;
+}
+
+.ctr-only-tool .result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+@media (max-width: 720px){
+  .ctr-only-tool .result-grid{ grid-template-columns:1fr; }
+}
+
+.ctr-only-tool .card{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.ctr-only-tool .card .kpi-title{
+  font-size:13px;
+  color:#666 !important;
+  margin-bottom:6px;
+}
+
+.ctr-only-tool .card .kpi-value{
+  font-size:20px;
+  font-weight:800;
+  color:#222 !important;
+}
+
+.ctr-only-tool .muted{
+  color:#666 !important;
+  font-size:12.5px;
+}
+
+.ctr-only-tool footer{
+  margin-top:24px;
+  font-size:12.5px;
+  color:#777 !important;
+  line-height:1.45;
+}
+
+.ctr-only-tool .badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:700;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  color:#222 !important;
+}
+</style>
+</head>
+
+<body>
+<div class="ctr-only-tool">
+  <div class="container">
+    <h1>Simulador de CTR</h1>
+    <p>
+      Calcule o <strong>CTR</strong> e estime quantos <strong>cliques</strong> você recebe a partir das impressões.
+      Ideal para analisar SEO, Google Ads e Meta Ads.
+    </p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="impressions">Impressões</label>
+        <input type="number" id="impressions" placeholder="Ex: 10000" min="0" step="1" />
+        <small class="hint">Quantas vezes seu resultado/anúncio foi exibido.</small>
+      </div>
+
+      <div class="field">
+        <label for="clicks">Cliques</label>
+        <input type="number" id="clicks" placeholder="Ex: 350" min="0" step="1" />
+        <small class="hint">Quantas pessoas clicaram.</small>
+      </div>
+
+      <div class="field">
+        <label for="ctr">CTR (%) (opcional)</label>
+        <input type="number" id="ctr" placeholder="Ex: 3.5" min="0" step="0.01" />
+        <small class="hint">Se você preencher o CTR, calculamos cliques estimados.</small>
+      </div>
+
+      <div class="field">
+        <label for="mode">Modo</label>
+        <select id="mode" onchange="trocarModo()" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:8px; font-size:16px; background:#fff; color:#222;">
+          <option value="calc_ctr">Calcular CTR (Impressões + Cliques)</option>
+          <option value="calc_clicks">Calcular Cliques (Impressões + CTR)</option>
+        </select>
+        <small class="hint">Escolha o que deseja calcular.</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="calcular()">Calcular</button>
+      <button class="btn-ghost" type="button" onclick="limpar()">Limpar</button>
+      <button class="btn-ghost" type="button" onclick="exemplo()">Preencher exemplo</button>
+    </div>
+
+    <div class="result" id="result">
+      <strong>Resultado</strong>
+      <div class="muted" id="formulaText" style="margin-top:6px;"></div>
+
+      <div class="result-grid">
+        <div class="card">
+          <div class="kpi-title">CTR</div>
+          <div class="kpi-value" id="kpiCtr">—</div>
+          <div class="muted"><span class="badge" id="ctrBadge">—</span></div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Cliques</div>
+          <div class="kpi-value" id="kpiClicks">—</div>
+          <div class="muted">Estimado ou informado</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Impressões</div>
+          <div class="kpi-value" id="kpiImpr">—</div>
+          <div class="muted">Base do cálculo</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Dica: CTR = Cliques ÷ Impressões × 100. Em SEO, trabalhar title/description e intenção da página costuma elevar CTR.
+    </footer>
+  </div>
+</div>
+
+<script>
+function n(v){
+  const x = Number(String(v).replace(",", "."));
+  return Number.isFinite(x) ? x : 0;
+}
+
+function formatInt(x){
+  return Math.round(x).toLocaleString("pt-BR");
+}
+
+function formatPct(x){
+  return x.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
+}
+
+function statusCtr(ctr){
+  if (ctr <= 0) return "Preencha os dados";
+  if (ctr < 1) return "Baixo";
+  if (ctr < 3) return "Ok";
+  if (ctr < 6) return "Bom";
+  return "Muito bom";
+}
+
+function trocarModo(){
+  const mode = document.getElementById("mode").value;
+
+  if (mode === "calc_ctr"){
+    // precisa de impr + clicks
+    document.getElementById("clicks").disabled = false;
+    document.getElementById("ctr").disabled = true;
+    document.getElementById("ctr").value = "";
+  } else {
+    // precisa de impr + ctr
+    document.getElementById("ctr").disabled = false;
+    document.getElementById("clicks").disabled = true;
+    document.getElementById("clicks").value = "";
+  }
+
+  document.getElementById("result").style.display = "none";
+}
+
+function calcular(){
+  const mode = document.getElementById("mode").value;
+  const impr = n(document.getElementById("impressions").value);
+  const clicksInput = n(document.getElementById("clicks").value);
+  const ctrInput = n(document.getElementById("ctr").value);
+
+  if (impr <= 0){
+    alert("Preencha as impressões com um valor maior que zero.");
+    return;
+  }
+
+  let ctr = 0;
+  let clicks = 0;
+
+  if (mode === "calc_ctr"){
+    if (clicksInput <= 0){
+      alert("Preencha os cliques com um valor maior que zero.");
+      return;
+    }
+    clicks = clicksInput;
+    ctr = (clicks / impr) * 100;
+    document.getElementById("formulaText").textContent = "CTR = Cliques ÷ Impressões × 100";
+  } else {
+    if (ctrInput <= 0){
+      alert("Preencha o CTR com um valor maior que zero.");
+      return;
+    }
+    ctr = ctrInput;
+    clicks = impr * (ctr / 100);
+    document.getElementById("formulaText").textContent = "Cliques = Impressões × (CTR ÷ 100)";
+  }
+
+  document.getElementById("kpiCtr").textContent = formatPct(ctr);
+  document.getElementById("kpiClicks").textContent = formatInt(clicks);
+  document.getElementById("kpiImpr").textContent = formatInt(impr);
+  document.getElementById("ctrBadge").textContent = statusCtr(ctr);
+
+  document.getElementById("result").style.display = "block";
+}
+
+function limpar(){
+  document.getElementById("impressions").value = "";
+  document.getElementById("clicks").value = "";
+  document.getElementById("ctr").value = "";
+  document.getElementById("result").style.display = "none";
+}
+
+function exemplo(){
+  document.getElementById("impressions").value = 10000;
+  document.getElementById("mode").value = "calc_ctr";
+  trocarModo();
+  document.getElementById("clicks").value = 350;
+  calcular();
+}
+
+// inicia no modo padrão
+trocarModo();
+</script>
+</body>
+</html>
