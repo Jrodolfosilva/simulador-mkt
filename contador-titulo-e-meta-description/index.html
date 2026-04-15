@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contador de Título e Meta Description</title>
+
+<style>
+/* ===== VISUAL PADRÃO (mesmo do simulador) + BLINDADO CONTRA CSS DO TEMA ===== */
+.seo-tool * { box-sizing: border-box; }
+
+.seo-tool{
+  font-family: Arial, sans-serif !important;
+  background:#f9f9f9 !important;
+  padding:20px !important;
+  color:#222 !important;
+}
+
+.seo-tool .container{
+  max-width: 900px;
+  margin:auto;
+  background:#fff !important;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.06);
+  color:#222 !important;
+}
+
+.seo-tool h1,.seo-tool h2,.seo-tool p,.seo-tool label,.seo-tool small,.seo-tool footer,.seo-tool li,.seo-tool strong,.seo-tool span{
+  color:#222 !important;
+}
+
+.seo-tool h1{ margin:0 0 8px 0; }
+.seo-tool p{ margin:0 0 18px 0; color:#333 !important; line-height:1.5; }
+
+.seo-tool .grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+}
+
+.seo-tool .field{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.seo-tool label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.seo-tool input[type="text"], .seo-tool textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+  background:#fff !important;
+  color:#222 !important;
+  outline:none;
+}
+
+.seo-tool textarea{ min-height:110px; resize:vertical; }
+
+.seo-tool input::placeholder, .seo-tool textarea::placeholder{ color:#666 !important; }
+
+.seo-tool .hint{
+  display:block;
+  margin-top:8px;
+  font-size:12.5px;
+  color:#666 !important;
+}
+
+.seo-tool .actions{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+
+.seo-tool button{
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.seo-tool .btn-primary{
+  background:#007acc;
+  color:#fff !important;
+}
+.seo-tool .btn-primary:hover{ background:#005fa3; }
+
+.seo-tool .btn-ghost{
+  background:#f1f3f5;
+  color:#222 !important;
+}
+.seo-tool .btn-ghost:hover{ background:#e9ecef; }
+
+.seo-tool .result{
+  margin-top:20px;
+  background:#eef6ff !important;
+  border-left:5px solid #007acc;
+  padding:16px;
+  border-radius:10px;
+  color:#222 !important;
+}
+
+.seo-tool .result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+@media (max-width: 720px){
+  .seo-tool .result-grid{ grid-template-columns:1fr; }
+}
+
+.seo-tool .card{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.seo-tool .card .kpi-title{
+  font-size:13px;
+  color:#666 !important;
+  margin-bottom:6px;
+}
+
+.seo-tool .card .kpi-value{
+  font-size:20px;
+  font-weight:800;
+  color:#222 !important;
+}
+
+.seo-tool .badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:700;
+  border:1px solid #dbe7ff;
+  background:#ffffff !important;
+  color:#222 !important;
+}
+
+.seo-tool .muted{
+  color:#666 !important;
+  font-size:12.5px;
+}
+
+.seo-tool footer{
+  margin-top:24px;
+  font-size:12.5px;
+  color:#777 !important;
+  line-height:1.45;
+}
+
+.seo-tool .preview{
+  margin-top:12px;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  background:#fff !important;
+  padding:14px;
+}
+
+.seo-tool .serp-title{
+  font-size:18px;
+  font-weight:700;
+  color:#1a0dab !important;
+  margin:0 0 4px 0;
+  line-height:1.2;
+}
+
+.seo-tool .serp-url{
+  font-size:13px;
+  color:#006621 !important;
+  margin:0 0 6px 0;
+}
+
+.seo-tool .serp-desc{
+  font-size:13.5px;
+  color:#545454 !important;
+  margin:0;
+  line-height:1.4;
+}
+</style>
+</head>
+
+<body>
+<div class="seo-tool">
+  <div class="container">
+    <h1>Contador de Título e Meta Description</h1>
+    <p>
+      Digite seu <strong>Title</strong> e sua <strong>Meta Description</strong> para ver contagem de caracteres e um preview estilo Google.
+      Recomendações comuns: <strong>Title</strong> ~ 50–60 caracteres e <strong>Description</strong> ~ 140–160 caracteres.
+    </p>
+
+    <div class="grid">
+
+      <div class="field">
+        <label for="pageUrl">URL (opcional para o preview)</label>
+        <input type="text" id="pageUrl" placeholder="Ex: https://casadomarketingdigital.com.br/servicos/seo/" />
+        <small class="hint">Apenas para simular a linha de URL no resultado.</small>
+      </div>
+
+      <div class="field">
+        <label for="seoTitle">Título (Title)</label>
+        <input type="text" id="seoTitle" placeholder="Ex: Agência de SEO no Rio de Janeiro | Casa do Marketing Digital" maxlength="300" oninput="atualizar()" />
+        <small class="hint">Dica: inclua a palavra-chave principal e mantenha natural.</small>
+      </div>
+
+      <div class="field">
+        <label for="seoDesc">Meta Description</label>
+        <textarea id="seoDesc" placeholder="Ex: Aumente seu tráfego orgânico com SEO profissional. Estratégia, conteúdo e otimizações técnicas para gerar leads todos os dias." maxlength="600" oninput="atualizar()"></textarea>
+        <small class="hint">Dica: destaque benefício + diferencial + CTA.</small>
+      </div>
+
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="exemplo()">Preencher exemplo</button>
+      <button class="btn-ghost" type="button" onclick="limpar()">Limpar</button>
+      <button class="btn-ghost" type="button" onclick="copiarTudo()">Copiar Title + Description</button>
+    </div>
+
+    <div class="result" id="resultBox" style="display:none;">
+      <strong>Status</strong>
+      <div class="result-grid">
+        <div class="card">
+          <div class="kpi-title">Título (caracteres)</div>
+          <div class="kpi-value" id="titleCount">0</div>
+          <div class="muted"><span class="badge" id="titleBadge">—</span></div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Description (caracteres)</div>
+          <div class="kpi-value" id="descCount">0</div>
+          <div class="muted"><span class="badge" id="descBadge">—</span></div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Sugestão rápida</div>
+          <div class="kpi-value" style="font-size:14px; font-weight:700;" id="hintText">—</div>
+          <div class="muted">Baseado em faixas comuns de SERP</div>
+        </div>
+      </div>
+
+      <div class="preview">
+        <div class="serp-title" id="serpTitle">Seu título vai aparecer aqui</div>
+        <div class="serp-url" id="serpUrl">https://seudominio.com/pagina</div>
+        <p class="serp-desc" id="serpDesc">Sua meta description vai aparecer aqui. Use um texto claro e persuasivo.</p>
+      </div>
+    </div>
+
+    <footer>
+      Observação: o Google pode reescrever título e description dependendo da consulta, mas manter boas faixas ajuda a reduzir cortes e melhorar CTR.
+    </footer>
+  </div>
+</div>
+
+<script>
+function contarChars(str){
+  return (str || "").length;
+}
+
+function faixaStatusTitulo(n){
+  if (n === 0) return {txt:"Preencha", hint:"Digite um title com palavra-chave.", level:"warn"};
+  if (n < 30) return {txt:"Curto", hint:"Seu title pode ficar pouco informativo.", level:"warn"};
+  if (n <= 60) return {txt:"Bom", hint:"Faixa boa para não cortar.", level:"ok"};
+  if (n <= 70) return {txt:"No limite", hint:"Pode cortar em alguns dispositivos.", level:"warn"};
+  return {txt:"Longo", hint:"Provável corte. Enxugue o texto.", level:"bad"};
+}
+
+function faixaStatusDesc(n){
+  if (n === 0) return {txt:"Preencha", hint:"Escreva a description com benefício e CTA.", level:"warn"};
+  if (n < 90) return {txt:"Curta", hint:"Pode ficar fraca. Adicione benefício + diferencial.", level:"warn"};
+  if (n <= 160) return {txt:"Boa", hint:"Faixa comum para evitar corte.", level:"ok"};
+  if (n <= 180) return {txt:"No limite", hint:"Pode cortar em algumas SERPs.", level:"warn"};
+  return {txt:"Longa", hint:"Provável corte. Reduza e deixe mais direto.", level:"bad"};
+}
+
+function setBadge(el, status){
+  el.textContent = status.txt;
+  // sem depender de cores do tema (só texto). Se quiser, eu faço versão com cor também.
+}
+
+function atualizar(){
+  const url = document.getElementById("pageUrl").value.trim();
+  const title = document.getElementById("seoTitle").value.trim();
+  const desc = document.getElementById("seoDesc").value.trim();
+
+  const tCount = contarChars(title);
+  const dCount = contarChars(desc);
+
+  document.getElementById("titleCount").textContent = tCount.toLocaleString("pt-BR");
+  document.getElementById("descCount").textContent = dCount.toLocaleString("pt-BR");
+
+  const tStatus = faixaStatusTitulo(tCount);
+  const dStatus = faixaStatusDesc(dCount);
+
+  setBadge(document.getElementById("titleBadge"), tStatus);
+  setBadge(document.getElementById("descBadge"), dStatus);
+
+  // Sugestão rápida (prioriza o pior)
+  const hint = (tStatus.level === "bad" || tStatus.level === "warn") ? tStatus.hint : dStatus.hint;
+  document.getElementById("hintText").textContent = hint;
+
+  // Preview
+  document.getElementById("serpTitle").textContent = title || "Seu título vai aparecer aqui";
+  document.getElementById("serpUrl").textContent = url || "https://seudominio.com/pagina";
+  document.getElementById("serpDesc").textContent = desc || "Sua meta description vai aparecer aqui. Use um texto claro e persuasivo.";
+
+  document.getElementById("resultBox").style.display = "block";
+}
+
+function limpar(){
+  document.getElementById("pageUrl").value = "";
+  document.getElementById("seoTitle").value = "";
+  document.getElementById("seoDesc").value = "";
+  document.getElementById("resultBox").style.display = "none";
+}
+
+function exemplo(){
+  document.getElementById("pageUrl").value = "https://casadomarketingdigital.com.br/servicos/seo/";
+  document.getElementById("seoTitle").value = "Agência de SEO no Rio de Janeiro | Casa do Marketing Digital";
+  document.getElementById("seoDesc").value = "Aumente seu tráfego orgânico com SEO profissional: estratégia, conteúdo e otimizações técnicas para gerar leads todos os dias. Fale com a equipe e peça um diagnóstico.";
+  atualizar();
+}
+
+function copiarTudo(){
+  const title = document.getElementById("seoTitle").value.trim();
+  const desc = document.getElementById("seoDesc").value.trim();
+  const texto = `Title: ${title}\nMeta Description: ${desc}`;
+
+  if (!title && !desc){
+    alert("Nada para copiar. Preencha Title e/ou Meta Description.");
+    return;
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(texto).then(() => alert("Copiado!")).catch(() => fallbackCopy(texto));
+  } else {
+    fallbackCopy(texto);
+  }
+}
+
+function fallbackCopy(texto){
+  const ta = document.createElement("textarea");
+  ta.value = texto;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  alert("Copiado!");
+}
+
+// inicia com preview vazio mas pronto
+atualizar();
+</script>
+</body>
+</html>
+```
