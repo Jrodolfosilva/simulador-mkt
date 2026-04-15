@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerador de URL com UTM – Ferramenta de Marketing</title>
+
+    <style>
+      .utm-tool * {
+        box-sizing: border-box;
+      }
+
+      .utm-tool {
+        font-family: Arial, sans-serif !important;
+        background: #f9f9f9 !important;
+        padding: 20px !important;
+        color: #222 !important;
+      }
+
+      .utm-tool .container {
+        max-width: 800px;
+        margin: auto;
+        background: #ffffff !important;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+        color: #222 !important;
+      }
+
+      .utm-tool h1 {
+        margin-top: 0;
+        color: #222 !important;
+      }
+
+      .utm-tool p,
+      .utm-tool label,
+      .utm-tool footer {
+        color: #222 !important;
+      }
+
+      .utm-tool label {
+        display: block;
+        margin-top: 20px;
+        font-weight: bold;
+      }
+
+      .utm-tool input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        background: #ffffff !important;
+        color: #222 !important;
+      }
+
+      .utm-tool input::placeholder {
+        color: #666 !important;
+      }
+
+      .utm-tool button {
+        margin-top: 25px;
+        background: #007acc;
+        color: #ffffff !important;
+        font-size: 16px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .utm-tool button:hover {
+        background: #005fa3;
+      }
+
+      .utm-tool .resultado {
+        margin-top: 30px;
+        padding: 15px;
+        background: #eef6ff !important;
+        border-left: 4px solid #007acc;
+        word-break: break-all;
+        color: #222 !important;
+        display: none;
+      }
+
+      .utm-tool .resultado a {
+        color: #007acc !important;
+        text-decoration: none;
+      }
+
+      .utm-tool .copy-btn {
+        margin-top: 15px;
+        background: #28a745;
+      }
+
+      .utm-tool .copy-btn:hover {
+        background: #1e7e34;
+      }
+
+      .utm-tool footer {
+        margin-top: 40px;
+        font-size: 13px;
+        color: #777 !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="utm-tool">
+      <div class="container">
+        <h1>Gerador de URL com UTM</h1>
+        <p>
+          Crie facilmente URLs rastreáveis para suas campanhas de marketing com
+          parâmetros UTM. Ideal para Google Analytics e ferramentas de BI.
+        </p>
+
+        <label for="base">URL Base *</label>
+        <input
+          type="text"
+          id="base"
+          placeholder="https://seudominio.com/pagina"
+        />
+
+        <label for="source">utm_source *</label>
+        <input type="text" id="source" placeholder="Ex: instagram" />
+
+        <label for="medium">utm_medium *</label>
+        <input type="text" id="medium" placeholder="Ex: social" />
+
+        <label for="campaign">utm_campaign *</label>
+        <input type="text" id="campaign" placeholder="Ex: promocao-julho" />
+
+        <label for="term">utm_term (opcional)</label>
+        <input type="text" id="term" placeholder="Ex: palavra-chave" />
+
+        <label for="content">utm_content (opcional)</label>
+        <input type="text" id="content" placeholder="Ex: banner-01" />
+
+        <button onclick="gerarUTM()">Gerar URL com UTM</button>
+
+        <div class="resultado" id="output"></div>
+
+        <footer>
+          Os parâmetros UTM ajudam a rastrear a origem do tráfego e o desempenho
+          de campanhas em plataformas como Google Analytics.
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      function gerarUTM() {
+        const base = document.getElementById("base").value.trim();
+        const source = document.getElementById("source").value.trim();
+        const medium = document.getElementById("medium").value.trim();
+        const campaign = document.getElementById("campaign").value.trim();
+        const term = document.getElementById("term").value.trim();
+        const content = document.getElementById("content").value.trim();
+
+        if (!base || !source || !medium || !campaign) {
+          alert("Preencha todos os campos obrigatórios.");
+          return;
+        }
+
+        let separador = base.includes("?") ? "&" : "?";
+
+        let url =
+          base +
+          separador +
+          "utm_source=" +
+          encodeURIComponent(source) +
+          "&utm_medium=" +
+          encodeURIComponent(medium) +
+          "&utm_campaign=" +
+          encodeURIComponent(campaign);
+
+        if (term) {
+          url += "&utm_term=" + encodeURIComponent(term);
+        }
+
+        if (content) {
+          url += "&utm_content=" + encodeURIComponent(content);
+        }
+
+        const output = document.getElementById("output");
+        output.innerHTML = `
+    <strong>URL Gerada:</strong><br><br>
+    <a href="${url}" target="_blank">${url}</a>
+    <button class="copy-btn" onclick="copiarURL('${url}')">Copiar URL</button>
+  `;
+        output.style.display = "block";
+      }
+
+      function copiarURL(texto) {
+        navigator.clipboard.writeText(texto);
+        alert("URL copiada com sucesso!");
+      }
+    </script>
+  </body>
+</html>

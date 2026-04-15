@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Analisador de robots.txt e sitemap.xml</title>
+
+<style>
+/* ===== PADRÃO VISUAL + BLINDADO CONTRA CSS DO TEMA ===== */
+.tech-tool * { box-sizing: border-box; }
+
+.tech-tool{
+  font-family: Arial, sans-serif !important;
+  background:#f9f9f9 !important;
+  padding:20px !important;
+  color:#222 !important;
+}
+
+.tech-tool .container{
+  max-width: 980px;
+  margin:auto;
+  background:#fff !important;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.06);
+  color:#222 !important;
+}
+
+.tech-tool h1,.tech-tool h2,.tech-tool h3,.tech-tool p,.tech-tool label,
+.tech-tool small,.tech-tool footer,.tech-tool li,.tech-tool strong,
+.tech-tool span,.tech-tool div,.tech-tool pre,.tech-tool code{
+  color:#222 !important;
+}
+
+.tech-tool h1{ margin:0 0 8px 0; }
+.tech-tool p{ margin:0 0 18px 0; color:#333 !important; line-height:1.5; }
+
+.tech-tool .grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+@media (max-width: 900px){
+  .tech-tool .grid{ grid-template-columns:1fr; }
+}
+
+.tech-tool .field{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.tech-tool label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.tech-tool input[type="text"], .tech-tool textarea, .tech-tool select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+  background:#fff !important;
+  color:#222 !important;
+  outline:none;
+}
+
+.tech-tool textarea{ min-height: 130px; resize: vertical; }
+
+.tech-tool input::placeholder, .tech-tool textarea::placeholder{ color:#666 !important; }
+
+.tech-tool .hint{
+  display:block;
+  margin-top:8px;
+  font-size:12.5px;
+  color:#666 !important;
+  line-height:1.35;
+}
+
+.tech-tool .actions{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+
+.tech-tool button{
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.tech-tool .btn-primary{
+  background:#007acc;
+  color:#fff !important;
+}
+.tech-tool .btn-primary:hover{ background:#005fa3; }
+
+.tech-tool .btn-ghost{
+  background:#f1f3f5;
+  color:#222 !important;
+}
+.tech-tool .btn-ghost:hover{ background:#e9ecef; }
+
+.tech-tool .result{
+  margin-top:20px;
+  background:#eef6ff !important;
+  border-left:5px solid #007acc;
+  padding:16px;
+  border-radius:10px;
+  color:#222 !important;
+  display:none;
+}
+
+.tech-tool .result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+@media (max-width: 900px){
+  .tech-tool .result-grid{ grid-template-columns:1fr; }
+}
+
+.tech-tool .card{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.tech-tool .card .kpi-title{
+  font-size:13px;
+  color:#666 !important;
+  margin-bottom:6px;
+}
+
+.tech-tool .card .kpi-value{
+  font-size:20px;
+  font-weight:800;
+  color:#222 !important;
+}
+
+.tech-tool .muted{
+  color:#666 !important;
+  font-size:12.5px;
+  line-height:1.4;
+}
+
+.tech-tool .badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:700;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  color:#222 !important;
+}
+
+.tech-tool .tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+.tech-tool .tab{
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  cursor:pointer;
+  font-weight:700;
+  font-size:14px;
+}
+
+.tech-tool .tab.active{
+  background:#eef6ff !important;
+  border-color:#007acc;
+}
+
+.tech-tool .panel{
+  margin-top:12px;
+  display:none;
+}
+
+.tech-tool .panel.active{
+  display:block;
+}
+
+.tech-tool pre{
+  margin:0;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #e7e7e7;
+  background:#fff !important;
+  overflow:auto;
+  max-height:320px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.tech-tool code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+}
+
+.tech-tool .list{
+  margin:0;
+  padding-left:18px;
+}
+
+.tech-tool .two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+@media (max-width: 900px){
+  .tech-tool .two{ grid-template-columns:1fr; }
+}
+
+.tech-tool a{
+  color:#007acc !important;
+  text-decoration:none;
+}
+.tech-tool a:hover{ text-decoration:underline; }
+
+.tech-tool footer{
+  margin-top:24px;
+  font-size:12.5px;
+  color:#777 !important;
+  line-height:1.45;
+}
+</style>
+</head>
+
+<body>
+<div class="tech-tool">
+  <div class="container">
+    <h1>Analisador de robots.txt e sitemap.xml</h1>
+    <p>
+      Informe um domínio e o analisador vai buscar <strong>robots.txt</strong> e <strong>sitemap.xml</strong> automaticamente,
+      identificar diretivas principais e apontar possíveis problemas comuns de indexação.
+    </p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="domain">Domínio / URL do site</label>
+        <input type="text" id="domain" placeholder="Ex: https://seudominio.com" />
+        <small class="hint">
+          Você pode colar com ou sem https. A ferramenta tentará encontrar automaticamente:
+          <code>/robots.txt</code> e <code>/sitemap.xml</code> (e sitemaps listados no robots).
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="userAgent">User-agent para simulação</label>
+        <select id="userAgent">
+          <option value="*">*</option>
+          <option value="Googlebot">Googlebot</option>
+          <option value="Bingbot">Bingbot</option>
+          <option value="Yandex">Yandex</option>
+          <option value="DuckDuckBot">DuckDuckBot</option>
+        </select>
+        <small class="hint">Usado para interpretar regras Allow/Disallow do robots.txt.</small>
+      </div>
+
+      <div class="field">
+        <label for="testPath">Testar caminho no robots (opcional)</label>
+        <input type="text" id="testPath" placeholder="Ex: /blog/ ou /wp-admin/" />
+        <small class="hint">A ferramenta indica se o caminho tende a estar permitido ou bloqueado.</small>
+      </div>
+
+      <div class="field">
+        <label for="timeout">Tempo limite (segundos)</label>
+        <select id="timeout">
+          <option value="10">10s</option>
+          <option value="15" selected>15s</option>
+          <option value="20">20s</option>
+        </select>
+        <small class="hint">Se o site for lento, aumente.</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="analisar()">Analisar</button>
+      <button class="btn-ghost" type="button" onclick="exemplo()">Exemplo</button>
+      <button class="btn-ghost" type="button" onclick="limpar()">Limpar</button>
+      <button class="btn-ghost" type="button" onclick="copiarRelatorio()">Copiar relatório</button>
+    </div>
+
+    <div class="result" id="result">
+      <strong>Resumo</strong>
+      <div class="muted" id="statusLine" style="margin-top:6px;"></div>
+
+      <div class="result-grid">
+        <div class="card">
+          <div class="kpi-title">robots.txt</div>
+          <div class="kpi-value" id="kpiRobots">—</div>
+          <div class="muted" id="kpiRobotsUrl">—</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Sitemaps encontrados</div>
+          <div class="kpi-value" id="kpiSitemaps">—</div>
+          <div class="muted">Do robots + padrões comuns</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Teste de caminho</div>
+          <div class="kpi-value" id="kpiPath">—</div>
+          <div class="muted" id="kpiPathDetail">—</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="issues" onclick="setTab('issues')">Diagnóstico</div>
+        <div class="tab" data-tab="robots" onclick="setTab('robots')">robots.txt</div>
+        <div class="tab" data-tab="sitemaps" onclick="setTab('sitemaps')">Sitemaps</div>
+      </div>
+
+      <div class="panel active" id="panel-issues">
+        <div class="two">
+          <div class="field" style="margin:0;">
+            <label>Principais achados</label>
+            <ul class="list" id="issuesList"></ul>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Dicas práticas</label>
+            <ul class="list" id="tipsList"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-robots">
+        <div class="field" style="margin:0;">
+          <label>Conteúdo do robots.txt</label>
+          <pre><code id="robotsRaw">—</code></pre>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-sitemaps">
+        <div class="field" style="margin:0;">
+          <label>Lista de sitemaps</label>
+          <ul class="list" id="sitemapList"></ul>
+          <div class="muted" style="margin-top:10px;">
+            Observação: por limitações do navegador (CORS), nem todo site permite que a ferramenta leia o conteúdo do sitemap.
+            Mesmo assim, você pode abrir os links para validar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Recurso extra: a ferramenta tenta identificar sitemaps declarados no robots.txt e também testa padrões comuns.
+      Se o site bloquear leitura por CORS, copie o conteúdo do robots/sitemap e cole aqui que eu te devolvo uma análise completa.
+    </footer>
+  </div>
+</div>
+
+<script>
+/* ===== Util ===== */
+function normalizeDomain(input){
+  let d = (input || "").trim();
+  if (!d) return "";
+  if (!/^https?:\/\//i.test(d)) d = "https://" + d;
+  try{
+    const u = new URL(d);
+    return u.origin; // remove path/query
+  }catch(e){
+    return "";
+  }
+}
+
+function timeoutFetch(url, ms){
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { signal: controller.signal, cache: "no-store" })
+    .finally(() => clearTimeout(id));
+}
+
+function esc(s){
+  return (s || "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function setTab(tab){
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+
+  document.querySelector(`.tab[data-tab="${tab}"]`).classList.add("active");
+  document.getElementById(`panel-${tab}`).classList.add("active");
+}
+
+function setList(el, items){
+  el.innerHTML = "";
+  if (!items.length){
+    const li = document.createElement("li");
+    li.textContent = "—";
+    el.appendChild(li);
+    return;
+  }
+  items.forEach(txt => {
+    const li = document.createElement("li");
+    li.textContent = txt;
+    el.appendChild(li);
+  });
+}
+
+function setLinkList(el, urls){
+  el.innerHTML = "";
+  if (!urls.length){
+    const li = document.createElement("li");
+    li.textContent = "—";
+    el.appendChild(li);
+    return;
+  }
+  urls.forEach(u => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = u;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = u;
+    li.appendChild(a);
+    el.appendChild(li);
+  });
+}
+
+/* ===== Robots parsing (simples e útil) ===== */
+function parseRobots(text){
+  const lines = (text || "")
+    .split(/\r?\n/)
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith("#"));
+
+  const groups = [];
+  let current = null;
+
+  for (const line of lines){
+    const idx = line.indexOf(":");
+    if (idx === -1) continue;
+    const key = line.slice(0, idx).trim().toLowerCase();
+    const val = line.slice(idx+1).trim();
+
+    if (key === "user-agent"){
+      if (!current){
+        current = { agents: [], allow: [], disallow: [], sitemap: [], crawlDelay: null };
+        groups.push(current);
+      }
+      // novo grupo se já tem regras e aparecer outro user-agent "separado"
+      if (current.allow.length || current.disallow.length || current.crawlDelay !== null){
+        current = { agents: [], allow: [], disallow: [], sitemap: [], crawlDelay: null };
+        groups.push(current);
+      }
+      current.agents.push(val);
+    } else if (key === "allow"){
+      if (!current){ current = { agents: ["*"], allow: [], disallow: [], sitemap: [], crawlDelay: null }; groups.push(current); }
+      current.allow.push(val);
+    } else if (key === "disallow"){
+      if (!current){ current = { agents: ["*"], allow: [], disallow: [], sitemap: [], crawlDelay: null }; groups.push(current); }
+      current.disallow.push(val);
+    } else if (key === "sitemap"){
+      if (!current){ current = { agents: ["*"], allow: [], disallow: [], sitemap: [], crawlDelay: null }; groups.push(current); }
+      current.sitemap.push(val);
+    } else if (key === "crawl-delay"){
+      if (!current){ current = { agents: ["*"], allow: [], disallow: [], sitemap: [], crawlDelay: null }; groups.push(current); }
+      const n = Number(val);
+      current.crawlDelay = Number.isFinite(n) ? n : val;
+    }
+  }
+  return groups;
+}
+
+function matchGroup(groups, agent){
+  const a = (agent || "*").toLowerCase();
+  // match exato primeiro, depois "*"
+  let exact = groups.find(g => g.agents.some(x => x.toLowerCase() === a));
+  if (exact) return exact;
+  let star = groups.find(g => g.agents.some(x => x.trim() === "*"));
+  return star || groups[0] || { agents:["*"], allow:[], disallow:[], sitemap:[], crawlDelay:null };
+}
+
+function isAllowedByRobots(group, path){
+  const p = (path || "/").trim() || "/";
+  const allow = group.allow || [];
+  const disallow = group.disallow || [];
+
+  // regra prática: o match mais longo vence (Allow/Disallow)
+  let best = { type: "allow", len: 0 }; // default allow
+  for (const a of allow){
+    if (!a) continue;
+    if (p.startsWith(a) && a.length > best.len){
+      best = { type: "allow", len: a.length };
+    }
+  }
+  for (const d of disallow){
+    // Disallow vazio significa permitido
+    if (d === "") continue;
+    if (p.startsWith(d) && d.length > best.len){
+      best = { type: "disallow", len: d.length };
+    }
+  }
+  return best.type !== "disallow";
+}
+
+/* ===== Análise ===== */
+async function analisar(){
+  const domainInput = document.getElementById("domain").value;
+  const origin = normalizeDomain(domainInput);
+  const ua = document.getElementById("userAgent").value;
+  const testPath = (document.getElementById("testPath").value || "").trim() || "/";
+  const timeoutSec = Number(document.getElementById("timeout").value) || 15;
+  const ms = timeoutSec * 1000;
+
+  if (!origin){
+    alert("Informe um domínio válido. Ex: https://seudominio.com");
+    return;
+  }
+
+  // reset UI
+  document.getElementById("result").style.display = "block";
+  setTab("issues");
+  document.getElementById("statusLine").textContent = "Buscando arquivos...";
+
+  document.getElementById("kpiRobots").textContent = "—";
+  document.getElementById("kpiRobotsUrl").textContent = "—";
+  document.getElementById("kpiSitemaps").textContent = "—";
+  document.getElementById("kpiPath").textContent = "—";
+  document.getElementById("kpiPathDetail").textContent = "—";
+
+  document.getElementById("robotsRaw").textContent = "—";
+  setList(document.getElementById("issuesList"), []);
+  setList(document.getElementById("tipsList"), []);
+  setLinkList(document.getElementById("sitemapList"), []);
+
+  const robotsUrl = origin + "/robots.txt";
+  const sitemapDefault = origin + "/sitemap.xml";
+  const sitemapIndexWP = origin + "/sitemap_index.xml";
+
+  let robotsText = "";
+  let robotsOk = false;
+
+  try{
+    const r = await timeoutFetch(robotsUrl, ms);
+    robotsOk = r.ok;
+    if (r.ok) robotsText = await r.text();
+  }catch(e){
+    robotsOk = false;
+  }
+
+  document.getElementById("kpiRobots").textContent = robotsOk ? "Encontrado" : "Não encontrado";
+  document.getElementById("kpiRobotsUrl").textContent = robotsUrl;
+
+  // Parse robots
+  let groups = [];
+  let matchedGroup = null;
+  let allowed = true;
+  let sitemapsFromRobots = [];
+  let hasNoIndexInRobots = false;
+
+  if (robotsOk){
+    document.getElementById("robotsRaw").innerHTML = esc(robotsText);
+    groups = parseRobots(robotsText);
+    matchedGroup = matchGroup(groups, ua);
+    allowed = isAllowedByRobots(matchedGroup, testPath);
+
+    // sitemaps
+    sitemapsFromRobots = Array.from(new Set(
+      groups.flatMap(g => (g.sitemap || [])).filter(Boolean)
+    ));
+
+    // heurística: bloqueio geral
+    const starGroup = matchGroup(groups, "*");
+    if ((starGroup.disallow || []).includes("/")){
+      hasNoIndexInRobots = true;
+    }
+  } else {
+    document.getElementById("robotsRaw").textContent = "Não foi possível ler o robots.txt. (Pode não existir ou estar bloqueado.)";
+  }
+
+  // Sitemaps encontrados (robôs + padrões)
+  const candidates = [sitemapDefault, sitemapIndexWP, ...sitemapsFromRobots]
+    .filter(Boolean);
+
+  const uniqueSitemaps = Array.from(new Set(candidates));
+
+  // checar existência (HEAD/GET) — CORS pode bloquear leitura, mas status pode vir.
+  const foundSitemaps = [];
+  for (const u of uniqueSitemaps){
+    try{
+      const resp = await timeoutFetch(u, ms);
+      if (resp.ok) foundSitemaps.push(u);
+    }catch(e){}
+  }
+
+  document.getElementById("kpiSitemaps").textContent = String(foundSitemaps.length);
+
+  // KPI caminho
+  if (robotsOk){
+    document.getElementById("kpiPath").textContent = allowed ? "Permitido" : "Bloqueado";
+    document.getElementById("kpiPathDetail").textContent = `UA: ${ua} | Caminho: ${testPath}`;
+  } else {
+    document.getElementById("kpiPath").textContent = "—";
+    document.getElementById("kpiPathDetail").textContent = "Sem robots.txt legível para simular.";
+  }
+
+  setLinkList(document.getElementById("sitemapList"), foundSitemaps.length ? foundSitemaps : uniqueSitemaps);
+
+  // Diagnóstico
+  const issues = [];
+  const tips = [];
+
+  if (!robotsOk){
+    issues.push("robots.txt não encontrado ou não acessível.");
+    tips.push("Se o site for WordPress, verifique configurações do servidor e cache/CDN.");
+  } else {
+    if (hasNoIndexInRobots){
+      issues.push("robots.txt parece bloquear o site inteiro (Disallow: /).");
+      tips.push("Verifique se isso é intencional. Em produção, normalmente NÃO se bloqueia o site inteiro.");
+    }
+
+    if (!sitemapsFromRobots.length){
+      issues.push("Nenhum sitemap declarado no robots.txt (linha Sitemap:).");
+      tips.push("Inclua ao menos 1 linha Sitemap: apontando para o sitemap principal.");
+    }
+
+    // Crawl-delay
+    const cd = matchedGroup && matchedGroup.crawlDelay;
+    if (cd !== null && cd !== undefined){
+      tips.push(`Crawl-delay detectado para ${ua}: ${cd}. (Nem todo bot respeita.)`);
+    }
+  }
+
+  if (!foundSitemaps.length){
+    issues.push("Sitemap padrão não foi encontrado (sitemap.xml / sitemap_index.xml).");
+    tips.push("Se usa WordPress + Yoast/RankMath, confirme o sitemap_index.xml e se está público.");
+  } else {
+    tips.push("Abra os sitemaps encontrados e verifique se retornam 200 e estão atualizados.");
+    tips.push("No Google Search Console: envie o sitemap e confira erros de cobertura.");
+  }
+
+  if (robotsOk && !allowed){
+    issues.push(`O caminho testado "${testPath}" parece bloqueado no robots para ${ua}.`);
+    tips.push("Evite bloquear páginas importantes (landing pages, categorias e conteúdos que devem ranquear).");
+  }
+
+  // Recomendação extra: sitemap em robots
+  if (foundSitemaps.length && robotsOk && !sitemapsFromRobots.length){
+    tips.push("Sugestão: adicione no robots.txt a linha Sitemap: com o link do sitemap encontrado.");
+  }
+
+  // Status
+  document.getElementById("statusLine").textContent =
+    `Domínio: ${origin} • UA: ${ua} • Sitemaps OK: ${foundSitemaps.length} • robots: ${robotsOk ? "OK" : "N/A"}`;
+
+  setList(document.getElementById("issuesList"), issues);
+  setList(document.getElementById("tipsList"), tips);
+
+  document.getElementById("result").style.display = "block";
+}
+
+function exemplo(){
+  document.getElementById("domain").value = "https://casadomarketingdigital.com.br";
+  document.getElementById("userAgent").value = "Googlebot";
+  document.getElementById("testPath").value = "/wp-admin/";
+  document.getElementById("timeout").value = "15";
+  analisar();
+}
+
+function limpar(){
+  document.getElementById("domain").value = "";
+  document.getElementById("userAgent").value = "*";
+  document.getElementById("testPath").value = "";
+  document.getElementById("timeout").value = "15";
+  document.getElementById("result").style.display = "none";
+}
+
+function copiarRelatorio(){
+  const origin = normalizeDomain(document.getElementById("domain").value);
+  const ua = document.getElementById("userAgent").value;
+  const robotsStatus = document.getElementById("kpiRobots").textContent;
+  const robotsUrl = document.getElementById("kpiRobotsUrl").textContent;
+  const sitemapsCount = document.getElementById("kpiSitemaps").textContent;
+  const pathStatus = document.getElementById("kpiPath").textContent;
+  const pathDetail = document.getElementById("kpiPathDetail").textContent;
+
+  const issues = Array.from(document.querySelectorAll("#issuesList li")).map(li => li.textContent).filter(Boolean);
+  const tips = Array.from(document.querySelectorAll("#tipsList li")).map(li => li.textContent).filter(Boolean);
+  const sitemaps = Array.from(document.querySelectorAll("#sitemapList li a")).map(a => a.textContent).filter(Boolean);
+
+  const text =
+`Analisador de robots.txt e sitemap.xml
+Domínio: ${origin || "—"}
+User-agent: ${ua}
+
+robots.txt: ${robotsStatus}
+URL: ${robotsUrl || "—"}
+
+Sitemaps encontrados: ${sitemapsCount}
+${sitemaps.length ? ("- " + sitemaps.join("\n- ")) : "—"}
+
+Teste de caminho: ${pathStatus}
+${pathDetail || ""}
+
+Principais achados:
+${issues.length ? ("- " + issues.join("\n- ")) : "—"}
+
+Dicas práticas:
+${tips.length ? ("- " + tips.join("\n- ")) : "—"}
+`;
+
+  if (!origin){
+    alert("Nada para copiar. Informe um domínio e clique em Analisar primeiro.");
+    return;
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(() => alert("Relatório copiado!"))
+      .catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  alert("Relatório copiado!");
+}
+</script>
+</body>
+</html>

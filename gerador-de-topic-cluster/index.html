@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gerador de Topic Cluster (Pillar + Clusters)</title>
+
+<style>
+/* ===== PADRÃO VISUAL + BLINDADO CONTRA CSS DO TEMA ===== */
+.cluster-tool * { box-sizing: border-box; }
+
+.cluster-tool{
+  font-family: Arial, sans-serif !important;
+  background:#f9f9f9 !important;
+  padding:20px !important;
+  color:#222 !important;
+}
+
+.cluster-tool .container{
+  max-width: 1100px;
+  margin:auto;
+  background:#fff !important;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.06);
+  color:#222 !important;
+}
+
+.cluster-tool h1,.cluster-tool h2,.cluster-tool h3,.cluster-tool p,.cluster-tool label,
+.cluster-tool small,.cluster-tool footer,.cluster-tool li,.cluster-tool strong,
+.cluster-tool span,.cluster-tool div,.cluster-tool pre,.cluster-tool code{
+  color:#222 !important;
+}
+
+.cluster-tool h1{ margin:0 0 8px 0; }
+.cluster-tool p{ margin:0 0 18px 0; color:#333 !important; line-height:1.5; }
+
+.cluster-tool .grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+@media (max-width: 980px){
+  .cluster-tool .grid{ grid-template-columns:1fr; }
+}
+
+.cluster-tool .field{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.cluster-tool label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.cluster-tool input[type="text"], .cluster-tool input[type="number"], .cluster-tool textarea, .cluster-tool select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+  background:#fff !important;
+  color:#222 !important;
+  outline:none;
+}
+
+.cluster-tool textarea{ min-height: 130px; resize: vertical; }
+
+.cluster-tool input::placeholder, .cluster-tool textarea::placeholder{ color:#666 !important; }
+
+.cluster-tool .hint{
+  display:block;
+  margin-top:8px;
+  font-size:12.5px;
+  color:#666 !important;
+  line-height:1.35;
+}
+
+.cluster-tool .actions{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+
+.cluster-tool button{
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.cluster-tool .btn-primary{
+  background:#007acc;
+  color:#fff !important;
+}
+.cluster-tool .btn-primary:hover{ background:#005fa3; }
+
+.cluster-tool .btn-ghost{
+  background:#f1f3f5;
+  color:#222 !important;
+}
+.cluster-tool .btn-ghost:hover{ background:#e9ecef; }
+
+.cluster-tool .result{
+  margin-top:20px;
+  background:#eef6ff !important;
+  border-left:5px solid #007acc;
+  padding:16px;
+  border-radius:10px;
+  color:#222 !important;
+  display:none;
+}
+
+.cluster-tool .tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+.cluster-tool .tab{
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  cursor:pointer;
+  font-weight:800;
+  font-size:14px;
+}
+
+.cluster-tool .tab.active{
+  background:#eef6ff !important;
+  border-color:#007acc;
+}
+
+.cluster-tool .panel{ display:none; margin-top:12px; }
+.cluster-tool .panel.active{ display:block; }
+
+.cluster-tool .result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+@media (max-width: 980px){
+  .cluster-tool .result-grid{ grid-template-columns:1fr; }
+}
+
+.cluster-tool .card{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.cluster-tool .card .kpi-title{
+  font-size:13px;
+  color:#666 !important;
+  margin-bottom:6px;
+}
+
+.cluster-tool .card .kpi-value{
+  font-size:20px;
+  font-weight:900;
+  color:#222 !important;
+}
+
+.cluster-tool .muted{
+  color:#666 !important;
+  font-size:12.5px;
+  line-height:1.4;
+}
+
+.cluster-tool .badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:800;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  color:#222 !important;
+}
+
+.cluster-tool .list{
+  margin:0;
+  padding-left:18px;
+}
+
+.cluster-tool .two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+@media (max-width: 980px){
+  .cluster-tool .two{ grid-template-columns:1fr; }
+}
+
+.cluster-tool .row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  background:#fff !important;
+}
+
+.cluster-tool .row + .row{ margin-top:10px; }
+
+.cluster-tool .tag{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid #dbe7ff;
+  background:#eef6ff !important;
+  font-weight:900;
+  font-size:12.5px;
+  color:#222 !important;
+  white-space:nowrap;
+}
+
+.cluster-tool .title{
+  font-weight:900;
+  margin:0 0 6px 0;
+}
+
+.cluster-tool .mini{
+  margin:0;
+  font-size:13px;
+  color:#555 !important;
+  line-height:1.35;
+}
+
+.cluster-tool .k-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.cluster-tool .btn-small{
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  color:#222 !important;
+  padding:8px 10px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:800;
+  font-size:13px;
+}
+
+.cluster-tool .btn-small:hover{
+  background:#eef6ff !important;
+  border-color:#007acc;
+}
+
+.cluster-tool pre{
+  margin:0;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #e7e7e7;
+  background:#fff !important;
+  overflow:auto;
+  max-height:420px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.cluster-tool code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+}
+
+.cluster-tool footer{
+  margin-top:24px;
+  font-size:12.5px;
+  color:#777 !important;
+  line-height:1.45;
+}
+</style>
+</head>
+
+<body>
+<div class="cluster-tool">
+  <div class="container">
+    <h1>Gerador de Topic Cluster (Pillar + Clusters)</h1>
+    <p>
+      Gere uma estrutura completa de <strong>Página Pilar</strong> + <strong>conteúdos de cluster</strong>, com intenção,
+      sugestão de URL, títulos, e checklist rápido de interlinking.
+    </p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="mainTopic">Tema principal (Pillar)</label>
+        <input type="text" id="mainTopic" placeholder="Ex: SEO para empresas" />
+        <small class="hint">O assunto central que vai virar a página pilar.</small>
+      </div>
+
+      <div class="field">
+        <label for="brand">Marca/Empresa (opcional)</label>
+        <input type="text" id="brand" placeholder="Ex: Casa do Marketing Digital" />
+        <small class="hint">Usamos para personalizar títulos/CTAs, se você quiser.</small>
+      </div>
+
+      <div class="field">
+        <label for="audience">Público-alvo (opcional)</label>
+        <input type="text" id="audience" placeholder="Ex: Empresas B2B, clínicas, e-commerces..." />
+        <small class="hint">Ajuda a criar clusters mais úteis e comerciais.</small>
+      </div>
+
+      <div class="field">
+        <label for="geo">Região (opcional)</label>
+        <input type="text" id="geo" placeholder="Ex: Rio de Janeiro, Barra da Tijuca..." />
+        <small class="hint">Se você trabalha SEO local, a região entra nos exemplos.</small>
+      </div>
+
+      <div class="field">
+        <label for="tone">Tom</label>
+        <select id="tone">
+          <option value="neutro" selected>Neutro (profissional)</option>
+          <option value="direto">Direto (curto e objetivo)</option>
+          <option value="persuasivo">Persuasivo (mais comercial)</option>
+          <option value="educativo">Educativo (didático)</option>
+        </select>
+        <small class="hint">Define o estilo dos títulos e descrições.</small>
+      </div>
+
+      <div class="field">
+        <label for="count">Quantidade de clusters</label>
+        <input type="number" id="count" value="12" min="6" max="50" step="1" />
+        <small class="hint">Recomendado: 10–16 para começar.</small>
+      </div>
+
+      <div class="field">
+        <label for="includeBOFU">Incluir clusters BOFU (comerciais)?</label>
+        <select id="includeBOFU">
+          <option value="yes" selected>Sim</option>
+          <option value="no">Não</option>
+        </select>
+        <small class="hint">BOFU = conteúdo mais próximo de contratação/compra.</small>
+      </div>
+
+      <div class="field">
+        <label for="customAngles">Ângulos extras (opcional)</label>
+        <textarea id="customAngles" placeholder="Ex: preços, comparativos, cases, checklist, erros comuns, ferramentas, templates..."></textarea>
+        <small class="hint">Se você colocar tópicos aqui, o gerador tenta incluir na lista.</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="gerar()">Gerar Topic Cluster</button>
+      <button class="btn-ghost" type="button" onclick="exemplo()">Exemplo</button>
+      <button class="btn-ghost" type="button" onclick="limpar()">Limpar</button>
+      <button class="btn-ghost" type="button" onclick="copiarTudo()">Copiar tudo</button>
+    </div>
+
+    <div class="result" id="result">
+      <strong>Resultado</strong>
+      <div class="muted" id="statusLine" style="margin-top:6px;"></div>
+
+      <div class="result-grid">
+        <div class="card">
+          <div class="kpi-title">Clusters gerados</div>
+          <div class="kpi-value" id="kpiClusters">—</div>
+          <div class="muted">TOFU/MOFU/BOFU</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Sugestão de URL do Pilar</div>
+          <div class="kpi-value" style="font-size:14px;font-weight:900;" id="kpiPillarUrl">—</div>
+          <div class="muted">Slug sugerido</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Checklist</div>
+          <div class="kpi-value" id="kpiChecklist">—</div>
+          <div class="muted">Interlinking</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="setTab('plan')">Plano (visual)</div>
+        <div class="tab" onclick="setTab('export')">Export (copiar/colar)</div>
+        <div class="tab" onclick="setTab('json')">JSON (Make/Planilha)</div>
+      </div>
+
+      <div class="panel active" id="panel-plan">
+        <div class="field" style="margin:0;">
+          <label>Página Pilar</label>
+          <div id="pillarBox"></div>
+        </div>
+
+        <div class="field" style="margin-top:12px;">
+          <label>Clusters</label>
+          <div id="clusterBox"></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-export">
+        <div class="two">
+          <div class="field" style="margin:0;">
+            <label>Lista pronta (Markdown)</label>
+            <div class="k-actions">
+              <button class="btn-small" type="button" onclick="copyById('mdOut')">Copiar Markdown</button>
+            </div>
+            <pre><code id="mdOut">—</code></pre>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Lista pronta (CSV)</label>
+            <div class="k-actions">
+              <button class="btn-small" type="button" onclick="copyById('csvOut')">Copiar CSV</button>
+            </div>
+            <pre><code id="csvOut">—</code></pre>
+            <div class="muted" style="margin-top:8px;">CSV vem com colunas: tipo, intenção, título, slug, link_para_pilar.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-json">
+        <div class="field" style="margin:0;">
+          <label>JSON</label>
+          <div class="k-actions">
+            <button class="btn-small" type="button" onclick="copyById('jsonOut')">Copiar JSON</button>
+          </div>
+          <pre><code id="jsonOut">—</code></pre>
+          <div class="muted" style="margin-top:8px;">
+            Dica: você pode jogar isso direto numa planilha / Make e gerar posts em massa (pillar + clusters).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Melhorias incluídas: classificação TOFU/MOFU/BOFU, sugestão de URL/slug, export em Markdown/CSV/JSON e checklist de interlinking.
+      Se você quiser, eu adiciono também “título SEO + meta description” por cluster.
+    </footer>
+  </div>
+</div>
+
+<script>
+/* ===== UI ===== */
+function setTab(tab){
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+
+  if (tab === "plan"){
+    document.querySelectorAll(".tab")[0].classList.add("active");
+    document.getElementById("panel-plan").classList.add("active");
+  } else if (tab === "export"){
+    document.querySelectorAll(".tab")[1].classList.add("active");
+    document.getElementById("panel-export").classList.add("active");
+  } else {
+    document.querySelectorAll(".tab")[2].classList.add("active");
+    document.getElementById("panel-json").classList.add("active");
+  }
+}
+
+function slugify(str){
+  return (str || "")
+    .toString()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function uniq(arr){
+  const s = new Set();
+  const out = [];
+  for (const x of arr){
+    const k = (x || "").toLowerCase().trim();
+    if (!k) continue;
+    if (!s.has(k)){
+      s.add(k);
+      out.push(x);
+    }
+  }
+  return out;
+}
+
+function safeText(v){ return (v || "").replace(/\s+/g," ").trim(); }
+
+function copyText(text){
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise((resolve) => {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    resolve();
+  });
+}
+
+function copyById(id){
+  const el = document.getElementById(id);
+  const text = el ? (el.textContent || "") : "";
+  if (!text || text === "—"){
+    alert("Nada para copiar ainda. Gere o cluster primeiro.");
+    return;
+  }
+  copyText(text).then(() => alert("Copiado!"));
+}
+
+function copiarTudo(){
+  const md = document.getElementById("mdOut").textContent || "";
+  const csv = document.getElementById("csvOut").textContent || "";
+  const json = document.getElementById("jsonOut").textContent || "";
+  const pack = `MARKDOWN\n\n${md}\n\nCSV\n\n${csv}\n\nJSON\n\n${json}`;
+  if (!md || md === "—"){
+    alert("Gere o cluster primeiro.");
+    return;
+  }
+  copyText(pack).then(() => alert("Tudo copiado!"));
+}
+
+/* ===== Geração ===== */
+function gerar(){
+  const mainTopic = safeText(document.getElementById("mainTopic").value);
+  const brand = safeText(document.getElementById("brand").value);
+  const audience = safeText(document.getElementById("audience").value);
+  const geo = safeText(document.getElementById("geo").value);
+  const tone = document.getElementById("tone").value;
+  const count = Math.max(6, Math.min(50, parseInt(document.getElementById("count").value || "12", 10)));
+  const includeBOFU = document.getElementById("includeBOFU").value === "yes";
+  const customAnglesRaw = safeText(document.getElementById("customAngles").value);
+
+  if (!mainTopic){
+    alert("Preencha o tema principal (Pillar).");
+    return;
+  }
+
+  const ctx = {
+    mainTopic,
+    brand,
+    audience,
+    geo,
+    tone
+  };
+
+  const pillarTitle = buildPillarTitle(ctx);
+  const pillarSlug = slugify(pillarTitle.replace(/\|.*/,"")) || slugify(mainTopic);
+  const pillarUrl = "/" + pillarSlug + "/";
+
+  const angles = buildAnglePool(ctx, customAnglesRaw);
+  const clusters = buildClusters(ctx, angles, count, includeBOFU, pillarUrl);
+
+  // KPIs
+  document.getElementById("kpiClusters").textContent = String(clusters.length);
+  document.getElementById("kpiPillarUrl").textContent = pillarUrl;
+  document.getElementById("kpiChecklist").textContent = "7 itens";
+
+  document.getElementById("statusLine").textContent =
+    `Pillar: "${pillarTitle}" • Clusters: ${clusters.length} • Tom: ${tone.toUpperCase()}${geo ? " • Região: " + geo : ""}`;
+
+  // Render Pillar
+  renderPillar(ctx, pillarTitle, pillarUrl);
+
+  // Render clusters
+  renderClusters(clusters);
+
+  // Export outputs
+  document.getElementById("mdOut").textContent = exportMarkdown(pillarTitle, pillarUrl, clusters);
+  document.getElementById("csvOut").textContent = exportCSV(pillarTitle, pillarUrl, clusters);
+  document.getElementById("jsonOut").textContent = JSON.stringify({ pillar: { title: pillarTitle, url: pillarUrl }, clusters }, null, 2);
+
+  document.getElementById("result").style.display = "block";
+  setTab("plan");
+}
+
+function buildPillarTitle(ctx){
+  const geo = ctx.geo ? ` ${ctx.geo}` : "";
+  const brand = ctx.brand ? ` | ${ctx.brand}` : "";
+  const base = ctx.mainTopic;
+
+  if (ctx.tone === "direto") return `${base}${geo}${brand}`;
+  if (ctx.tone === "educativo") return `Guia Completo de ${base}${geo}${brand}`;
+  if (ctx.tone === "persuasivo") return `${base}${geo}: Como Crescer e Gerar Leads${brand}`;
+  return `${base}${geo}${brand}`; // neutro
+}
+
+function buildAnglePool(ctx, customRaw){
+  const baseAngles = [
+    "o que é", "como funciona", "guia completo", "passo a passo", "checklist",
+    "erros comuns", "boas práticas", "estratégia", "técnicas avançadas",
+    "ferramentas", "exemplos", "templates", "métricas", "KPI", "como medir",
+    "auditoria", "otimização", "conteúdo", "SEO técnico", "interlinking",
+    "topo de funil", "meio de funil", "fundo de funil",
+    "preço", "quanto custa", "consultoria", "agência", "serviço", "contratar",
+    "comparativo", "vs", "case", "estudo de caso", "resultados"
+  ];
+
+  const custom = customRaw
+    ? customRaw.split(/,|\n/).map(x => safeText(x)).filter(Boolean)
+    : [];
+
+  return uniq([...baseAngles, ...custom]);
+}
+
+function buildClusters(ctx, angles, count, includeBOFU, pillarUrl){
+  const topic = ctx.mainTopic;
+  const geo = ctx.geo ? ` ${ctx.geo}` : "";
+
+  // Mix de intenções
+  const tofuTemplates = [
+    `O que é ${topic}${geo} e por que isso importa`,
+    `Como funciona ${topic}${geo}: fundamentos e exemplos`,
+    `Guia para iniciantes: ${topic}${geo} do zero`,
+    `Checklist de ${topic}${geo}: o que não pode faltar`,
+    `Erros comuns em ${topic}${geo} (e como evitar)`,
+    `Ferramentas para ${topic}${geo}: as mais úteis`
+  ];
+
+  const mofuTemplates = [
+    `Estratégia de ${topic}${geo}: como montar um plano`,
+    `${topic}${geo}: passo a passo para aplicar na prática`,
+    `Como medir resultados de ${topic}${geo}: métricas e KPIs`,
+    `Auditoria de ${topic}${geo}: como identificar gargalos`,
+    `Interlinking e arquitetura: elevando ${topic}${geo}`,
+    `Conteúdo para ${topic}${geo}: pautas que ranqueiam`
+  ];
+
+  const bofuTemplates = [
+    `Quanto custa ${topic}${geo}? preços e fatores`,
+    `Consultoria de ${topic}${geo}: quando vale a pena`,
+    `Agência de ${topic}${geo}${geo}: como escolher`,
+    `${topic}${geo} para empresas: plano e proposta modelo`,
+    `Case: resultados com ${topic}${geo} (modelo de narrativa)`,
+    `Checklist de contratação: ${topic}${geo} sem cair em cilada`
+  ];
+
+  // Ajuste: se geo repetiu em "Agência de ...${geo}${geo}" por template, corrigir depois
+  const pool = [
+    ...tofuTemplates.map(t => ({ intent:"TOFU", title: cleanupGeo(t, ctx.geo) })),
+    ...mofuTemplates.map(t => ({ intent:"MOFU", title: cleanupGeo(t, ctx.geo) })),
+    ...(includeBOFU ? bofuTemplates.map(t => ({ intent:"BOFU", title: cleanupGeo(t, ctx.geo) })) : [])
+  ];
+
+  // adicionar ângulos custom extra (random)
+  const extra = [];
+  for (let i=0; i<angles.length; i++){
+    const a = angles[i];
+    if (extra.length >= 25) break;
+    // transformar ângulo em título
+    const title = angleToTitle(ctx, a);
+    if (title) extra.push({ intent: guessIntent(a), title });
+  }
+
+  const all = uniqByTitle([...pool, ...extra]);
+
+  // completar até count
+  const out = [];
+  while (out.length < count){
+    const item = all[out.length % all.length];
+    out.push(item);
+    if (out.length > 150) break;
+  }
+
+  // map final com slug/url/interlink
+  return out.slice(0, count).map((it, idx) => {
+    const slug = slugify(it.title);
+    return {
+      type: "cluster",
+      intent: it.intent,
+      title: it.title,
+      slug,
+      suggested_url: "/" + slug + "/",
+      link_to_pillar: pillarUrl,
+      interlink_rule: idx % 3 === 0 ? "Linkar para 2 clusters relacionados" : "Linkar para 1 cluster relacionado"
+    };
+  });
+}
+
+function cleanupGeo(title, geo){
+  if (!geo) return title;
+  // evita duplicar geo e trata espaços
+  const g = geo.trim();
+  return title.replace(new RegExp(`\\b${escapeRegExp(g)}\\b\\s*${escapeRegExp(g)}\\b`, "gi"), g).replace(/\s+/g," ").trim();
+}
+
+function escapeRegExp(s){
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function guessIntent(angle){
+  const a = (angle || "").toLowerCase();
+  if (/(preç|custa|contratar|agênc|consult|orçamento|serviç)/.test(a)) return "BOFU";
+  if (/(estrat|auditori|métr|kpi|como medir|passo|técnic|otimiza|arquitet|interlink)/.test(a)) return "MOFU";
+  return "TOFU";
+}
+
+function angleToTitle(ctx, angle){
+  const topic = ctx.mainTopic;
+  const geo = ctx.geo ? ` ${ctx.geo}` : "";
+  const a = (angle || "").toLowerCase();
+
+  if (a === "o que é") return `O que é ${topic}${geo}: definição e exemplos`;
+  if (a === "como funciona") return `Como funciona ${topic}${geo}: entenda o processo`;
+  if (a === "guia completo") return `Guia completo de ${topic}${geo}: tudo o que você precisa`;
+  if (a === "passo a passo") return `${topic}${geo}: passo a passo para aplicar`;
+  if (a === "checklist") return `Checklist de ${topic}${geo}: o básico bem feito`;
+  if (a === "erros comuns") return `Erros comuns em ${topic}${geo} e como corrigir`;
+  if (a === "boas práticas") return `Boas práticas de ${topic}${geo} para crescer mais rápido`;
+  if (a === "estratégia") return `Estratégia de ${topic}${geo}: como planejar e executar`;
+  if (a === "técnicas avançadas") return `${topic}${geo}: técnicas avançadas que funcionam`;
+  if (a === "ferramentas") return `Ferramentas para ${topic}${geo}: lista essencial`;
+  if (a === "exemplos") return `Exemplos de ${topic}${geo}: modelos prontos`;
+  if (a === "templates") return `Templates para ${topic}${geo}: modelos para copiar e colar`;
+  if (a === "métricas" || a === "kpi") return `Métricas e KPIs de ${topic}${geo}: o que acompanhar`;
+  if (a === "como medir") return `Como medir resultados de ${topic}${geo}: guia prático`;
+  if (a === "auditoria") return `Auditoria de ${topic}${geo}: checklist para encontrar falhas`;
+  if (a === "otimização") return `Otimização de ${topic}${geo}: ajustes que dão resultado`;
+  if (a === "conteúdo") return `Conteúdo para ${topic}${geo}: pautas e formatos que ranqueiam`;
+  if (a === "seo técnico") return `SEO técnico aplicado a ${topic}${geo}: o que revisar`;
+  if (a === "interlinking") return `Interlinking em ${topic}${geo}: como estruturar links internos`;
+
+  // BOFU
+  if (a === "preço" || a === "quanto custa") return `Quanto custa ${topic}${geo}? guia de preços e variáveis`;
+  if (a === "consultoria") return `Consultoria de ${topic}${geo}: quando contratar e o que exigir`;
+  if (a === "agência") return `Agência de ${topic}${geo}: como escolher a melhor opção`;
+  if (a === "serviço") return `Serviço de ${topic}${geo}: o que está incluso e como avaliar`;
+  if (a === "comparativo" || a === "vs") return `${topic}${geo} vs Alternativas: qual faz mais sentido?`;
+  if (a === "case" || a === "estudo de caso") return `Case de ${topic}${geo}: estrutura para apresentar resultados`;
+  if (a === "resultados") return `Resultados em ${topic}${geo}: o que esperar e em quanto tempo`;
+
+  // fallback: usar ângulo como subtítulo
+  if (!angle) return "";
+  return `${topic}${geo}: ${capitalize(angle)}`;
+}
+
+function capitalize(s){
+  const t = safeText(s);
+  return t ? t.charAt(0).toUpperCase() + t.slice(1) : "";
+}
+
+function uniqByTitle(items){
+  const set = new Set();
+  const out = [];
+  for (const it of items){
+    const key = (it.title || "").toLowerCase().trim();
+    if (!key) continue;
+    if (!set.has(key)){
+      set.add(key);
+      out.push(it);
+    }
+  }
+  return out;
+}
+
+/* ===== Render ===== */
+function renderPillar(ctx, pillarTitle, pillarUrl){
+  const box = document.getElementById("pillarBox");
+  box.innerHTML = "";
+
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const left = document.createElement("div");
+  const tag = document.createElement("span");
+  tag.className = "tag";
+  tag.textContent = "PILLAR";
+
+  const t = document.createElement("div");
+  t.innerHTML = `<div class="title">${escapeHtml(pillarTitle)}</div>
+                 <p class="mini">URL sugerida: <code>${escapeHtml(pillarUrl)}</code>${ctx.audience ? " • Público: " + escapeHtml(ctx.audience) : ""}${ctx.geo ? " • Região: " + escapeHtml(ctx.geo) : ""}</p>`;
+
+  left.appendChild(tag);
+  left.appendChild(t);
+
+  const right = document.createElement("div");
+  right.className = "k-actions";
+  right.innerHTML = `
+    <button class="btn-small" type="button" onclick="copyTextAndToast('${escapeJs(pillarTitle)}')">Copiar título</button>
+    <button class="btn-small" type="button" onclick="copyTextAndToast('${escapeJs(pillarUrl)}')">Copiar URL</button>
+  `;
+
+  row.appendChild(left);
+  row.appendChild(right);
+  box.appendChild(row);
+
+  const checklist = document.createElement("div");
+  checklist.style.marginTop = "10px";
+  checklist.className = "muted";
+  checklist.innerHTML = `
+    <strong>Checklist de interlinking:</strong>
+    <ul class="list" style="margin-top:8px;">
+      <li>Na página pilar, crie uma seção “Conteúdos relacionados” listando todos os clusters.</li>
+      <li>Em cada cluster, linke para a pilar (no começo e/ou no fim).</li>
+      <li>Crie links cruzados entre clusters (2–4 links por post).</li>
+      <li>Use âncoras descritivas (não “clique aqui”).</li>
+      <li>Mantenha URLs curtas e consistentes (slug simples).</li>
+      <li>Atualize a pilar conforme novos clusters forem publicados.</li>
+      <li>Mapeie clusters por intenção (TOFU/MOFU/BOFU) e priorize BOFU para receita.</li>
+    </ul>
+  `;
+  box.appendChild(checklist);
+}
+
+function renderClusters(clusters){
+  const box = document.getElementById("clusterBox");
+  box.innerHTML = "";
+
+  clusters.forEach((c, idx) => {
+    const row = document.createElement("div");
+    row.className = "row";
+
+    const left = document.createElement("div");
+    left.style.flex = "1";
+
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = c.intent;
+
+    const title = document.createElement("div");
+    title.className = "title";
+    title.textContent = `${idx+1}. ${c.title}`;
+
+    const mini = document.createElement("p");
+    mini.className = "mini";
+    mini.innerHTML = `Slug: <code>${escapeHtml(c.slug)}</code> • URL: <code>${escapeHtml(c.suggested_url)}</code> • ${escapeHtml(c.interlink_rule)}`;
+
+    left.appendChild(tag);
+    left.appendChild(title);
+    left.appendChild(mini);
+
+    const right = document.createElement("div");
+    right.className = "k-actions";
+    right.innerHTML = `
+      <button class="btn-small" type="button" onclick="copyTextAndToast('${escapeJs(c.title)}')">Copiar título</button>
+      <button class="btn-small" type="button" onclick="copyTextAndToast('${escapeJs(c.suggested_url)}')">Copiar URL</button>
+      <button class="btn-small" type="button" onclick="copyTextAndToast('${escapeJs(c.intent)}')">Copiar intenção</button>
+    `;
+
+    row.appendChild(left);
+    row.appendChild(right);
+    box.appendChild(row);
+  });
+}
+
+/* ===== Exports ===== */
+function exportMarkdown(pillarTitle, pillarUrl, clusters){
+  const lines = [];
+  lines.push(`# Página Pilar`);
+  lines.push(`- **Título:** ${pillarTitle}`);
+  lines.push(`- **URL:** ${pillarUrl}`);
+  lines.push("");
+  lines.push(`# Clusters`);
+  clusters.forEach((c, i) => {
+    lines.push(`${i+1}. **[${c.intent}]** ${c.title}`);
+    lines.push(`   - URL: ${c.suggested_url}`);
+    lines.push(`   - Link para pilar: ${c.link_to_pillar}`);
+    lines.push(`   - Interlink: ${c.interlink_rule}`);
+  });
+  return lines.join("\n");
+}
+
+function exportCSV(pillarTitle, pillarUrl, clusters){
+  const header = "tipo,intencao,titulo,slug,url_sugerida,link_para_pilar";
+  const rows = clusters.map(c => {
+    const cols = [
+      "cluster",
+      c.intent,
+      csvEscape(c.title),
+      c.slug,
+      c.suggested_url,
+      pillarUrl
+    ];
+    return cols.join(",");
+  });
+  // Inclui a pilar no topo (opcional)
+  const pillarRow = ["pillar","PILLAR",csvEscape(pillarTitle),slugify(pillarTitle),pillarUrl,""].join(",");
+  return [header, pillarRow, ...rows].join("\n");
+}
+
+function csvEscape(s){
+  const t = (s || "").replace(/"/g,'""');
+  return `"${t}"`;
+}
+
+/* ===== helpers escape ===== */
+function escapeHtml(s){
+  return (s || "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function escapeJs(s){
+  // para colocar dentro de string em onclick
+  return String(s || "")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/\n/g,"\\n")
+    .replace(/\r/g,"");
+}
+
+function copyTextAndToast(text){
+  copyText(text).then(() => alert("Copiado!"));
+}
+
+/* ===== Controls ===== */
+function exemplo(){
+  document.getElementById("mainTopic").value = "Agência de SEO";
+  document.getElementById("brand").value = "Casa do Marketing Digital";
+  document.getElementById("audience").value = "Empresas médias e grandes";
+  document.getElementById("geo").value = "Rio de Janeiro";
+  document.getElementById("tone").value = "persuasivo";
+  document.getElementById("count").value = 12;
+  document.getElementById("includeBOFU").value = "yes";
+  document.getElementById("customAngles").value = "preço, case, checklist, erros comuns, ferramentas, template de pauta";
+  gerar();
+}
+
+function limpar(){
+  ["mainTopic","brand","audience","geo","customAngles"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("tone").value = "neutro";
+  document.getElementById("count").value = 12;
+  document.getElementById("includeBOFU").value = "yes";
+  document.getElementById("result").style.display = "none";
+}
+</script>
+</body>
+</html>

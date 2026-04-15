@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagnóstico de Gargalo do Funil (Ads/SEO)</title>
+
+    <style>
+      /* ===== PADRÃO VISUAL + BLINDADO CONTRA CSS DO TEMA ===== */
+      .funnel-tool * {
+        box-sizing: border-box;
+      }
+
+      .funnel-tool {
+        font-family: Arial, sans-serif !important;
+        background: #f9f9f9 !important;
+        padding: 20px !important;
+        color: #222 !important;
+      }
+
+      .funnel-tool .container {
+        max-width: 1100px;
+        margin: auto;
+        background: #fff !important;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+        color: #222 !important;
+      }
+
+      .funnel-tool h1,
+      .funnel-tool h2,
+      .funnel-tool h3,
+      .funnel-tool p,
+      .funnel-tool label,
+      .funnel-tool small,
+      .funnel-tool footer,
+      .funnel-tool li,
+      .funnel-tool strong,
+      .funnel-tool span,
+      .funnel-tool div,
+      .funnel-tool pre,
+      .funnel-tool code {
+        color: #222 !important;
+      }
+
+      .funnel-tool h1 {
+        margin: 0 0 8px 0;
+      }
+      .funnel-tool p {
+        margin: 0 0 18px 0;
+        color: #333 !important;
+        line-height: 1.5;
+      }
+
+      .funnel-tool .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 980px) {
+        .funnel-tool .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .funnel-tool .field {
+        background: #fff !important;
+        border: 1px solid #e7e7e7;
+        border-radius: 10px;
+        padding: 14px;
+      }
+
+      .funnel-tool label {
+        display: block;
+        font-weight: 900;
+        margin-bottom: 8px;
+      }
+
+      .funnel-tool input[type="number"],
+      .funnel-tool input[type="text"],
+      .funnel-tool select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        background: #fff !important;
+        color: #222 !important;
+        outline: none;
+      }
+
+      .funnel-tool input::placeholder {
+        color: #666 !important;
+      }
+
+      .funnel-tool .hint {
+        display: block;
+        margin-top: 8px;
+        font-size: 12.5px;
+        color: #666 !important;
+        line-height: 1.35;
+      }
+
+      .funnel-tool .actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+
+      .funnel-tool button {
+        border: 0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 900;
+      }
+
+      .funnel-tool .btn-primary {
+        background: #007acc;
+        color: #fff !important;
+      }
+      .funnel-tool .btn-primary:hover {
+        background: #005fa3;
+      }
+
+      .funnel-tool .btn-ghost {
+        background: #f1f3f5;
+        color: #222 !important;
+      }
+      .funnel-tool .btn-ghost:hover {
+        background: #e9ecef;
+      }
+
+      .funnel-tool .result {
+        margin-top: 20px;
+        background: #eef6ff !important;
+        border-left: 5px solid #007acc;
+        padding: 16px;
+        border-radius: 10px;
+        color: #222 !important;
+        display: none;
+      }
+
+      .funnel-tool .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      @media (max-width: 980px) {
+        .funnel-tool .result-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .funnel-tool .card {
+        background: #fff !important;
+        border: 1px solid #e7e7e7;
+        border-radius: 10px;
+        padding: 14px;
+      }
+
+      .funnel-tool .card .kpi-title {
+        font-size: 13px;
+        color: #666 !important;
+        margin-bottom: 6px;
+      }
+
+      .funnel-tool .card .kpi-value {
+        font-size: 20px;
+        font-weight: 900;
+        color: #222 !important;
+      }
+
+      .funnel-tool .muted {
+        color: #666 !important;
+        font-size: 12.5px;
+        line-height: 1.4;
+      }
+
+      .funnel-tool .badge {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 900;
+        border: 1px solid #dbe7ff;
+        background: #fff !important;
+        color: #222 !important;
+      }
+
+      .funnel-tool .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      @media (max-width: 980px) {
+        .funnel-tool .two {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .funnel-tool .row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid #e7e7e7;
+        border-radius: 10px;
+        background: #fff !important;
+      }
+      .funnel-tool .row + .row {
+        margin-top: 10px;
+      }
+
+      .funnel-tool .tag {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid #dbe7ff;
+        background: #eef6ff !important;
+        font-weight: 900;
+        font-size: 12.5px;
+        color: #222 !important;
+        white-space: nowrap;
+      }
+
+      .funnel-tool .mini {
+        margin: 0;
+        font-size: 13px;
+        color: #555 !important;
+        line-height: 1.35;
+      }
+
+      .funnel-tool .tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+      .funnel-tool .tab {
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid #dbe7ff;
+        background: #fff !important;
+        cursor: pointer;
+        font-weight: 900;
+        font-size: 14px;
+      }
+      .funnel-tool .tab.active {
+        background: #eef6ff !important;
+        border-color: #007acc;
+      }
+      .funnel-tool .panel {
+        display: none;
+        margin-top: 12px;
+      }
+      .funnel-tool .panel.active {
+        display: block;
+      }
+
+      .funnel-tool pre {
+        margin: 0;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #e7e7e7;
+        background: #fff !important;
+        overflow: auto;
+        max-height: 460px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .funnel-tool code {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 13px;
+      }
+
+      .funnel-tool .btn-small {
+        border: 1px solid #dbe7ff;
+        background: #fff !important;
+        color: #222 !important;
+        padding: 8px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 900;
+        font-size: 13px;
+      }
+      .funnel-tool .btn-small:hover {
+        background: #eef6ff !important;
+        border-color: #007acc;
+      }
+
+      .funnel-tool .k-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .funnel-tool footer {
+        margin-top: 24px;
+        font-size: 12.5px;
+        color: #777 !important;
+        line-height: 1.45;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="funnel-tool">
+      <div class="container">
+        <h1>Diagnóstico de Gargalo do Funil (Ads/SEO)</h1>
+        <p>
+          Descubra <strong>onde está o maior gargalo</strong> do seu funil
+          (criativo/CTR, página/conversão, ticket/margem) e veja qual ajuste
+          tende a gerar o <strong>maior ganho de receita/ROI</strong>. Inclui
+          simulações “se eu melhorar X%”.
+        </p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="budget">Investimento (R$)</label>
+            <input
+              type="number"
+              id="budget"
+              placeholder="Ex: 3000"
+              min="0"
+              step="0.01"
+            />
+            <small class="hint">Quanto foi/será investido no período.</small>
+          </div>
+
+          <div class="field">
+            <label for="mode">Modelo de compra</label>
+            <select id="mode" onchange="toggleMode()">
+              <option value="cpc" selected>CPC</option>
+              <option value="cpm">CPM</option>
+            </select>
+            <small class="hint"
+              >CPC: informe custo por clique. CPM: informe custo por 1.000
+              impressões.</small
+            >
+          </div>
+
+          <div class="field" id="fieldCpc">
+            <label for="cpc">CPC (R$)</label>
+            <input
+              type="number"
+              id="cpc"
+              placeholder="Ex: 2.50"
+              min="0"
+              step="0.01"
+            />
+            <small class="hint">Custo médio por clique.</small>
+          </div>
+
+          <div class="field" id="fieldCpm" style="display: none">
+            <label for="cpm">CPM (R$)</label>
+            <input
+              type="number"
+              id="cpm"
+              placeholder="Ex: 35"
+              min="0"
+              step="0.01"
+            />
+            <small class="hint">Custo por mil impressões.</small>
+          </div>
+
+          <div class="field">
+            <label for="ctr">CTR (%)</label>
+            <input
+              type="number"
+              id="ctr"
+              placeholder="Ex: 2.0"
+              min="0"
+              step="0.01"
+            />
+            <small class="hint"
+              >No CPM é obrigatório. No CPC, ajuda a estimar impressões.</small
+            >
+          </div>
+
+          <div class="field">
+            <label for="conv">Conversão clique → compra/lead (%)</label>
+            <input
+              type="number"
+              id="conv"
+              placeholder="Ex: 2.0"
+              min="0"
+              step="0.01"
+            />
+            <small class="hint"
+              >Se for lead, trate como “lead gerado” e use ticket como valor do
+              lead.</small
+            >
+          </div>
+
+          <div class="field">
+            <label for="ticket">Ticket / valor por conversão (R$)</label>
+            <input
+              type="number"
+              id="ticket"
+              placeholder="Ex: 250"
+              min="0"
+              step="0.01"
+            />
+            <small class="hint">Quanto vale cada conversão (venda/lead).</small>
+          </div>
+
+          <div class="field">
+            <label for="margin">Margem (%) (opcional)</label>
+            <input
+              type="number"
+              id="margin"
+              placeholder="Ex: 40"
+              min="0"
+              step="0.01"
+            />
+            <small class="hint"
+              >Se informar, calculamos lucro e ROI com margem.</small
+            >
+          </div>
+
+          <div class="field">
+            <label for="uplift">Simular melhoria (%)</label>
+            <select id="uplift">
+              <option value="10">+10%</option>
+              <option value="20" selected>+20%</option>
+              <option value="30">+30%</option>
+              <option value="50">+50%</option>
+            </select>
+            <small class="hint"
+              >Testa o impacto de melhorar CTR, conversão ou ticket nesse
+              percentual.</small
+            >
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" type="button" onclick="analisar()">
+            Diagnosticar gargalo
+          </button>
+          <button class="btn-ghost" type="button" onclick="exemplo()">
+            Exemplo
+          </button>
+          <button class="btn-ghost" type="button" onclick="limpar()">
+            Limpar
+          </button>
+          <button class="btn-ghost" type="button" onclick="copiarRelatorio()">
+            Copiar relatório
+          </button>
+        </div>
+
+        <div class="result" id="result">
+          <strong>Resultado</strong>
+          <div class="muted" id="statusLine" style="margin-top: 6px"></div>
+
+          <div class="result-grid">
+            <div class="card">
+              <div class="kpi-title">Receita atual</div>
+              <div class="kpi-value" id="kpiRevenue">—</div>
+              <div class="muted">Conversões × Ticket</div>
+            </div>
+            <div class="card">
+              <div class="kpi-title">ROAS atual</div>
+              <div class="kpi-value" id="kpiRoas">—</div>
+              <div class="muted">Receita ÷ Investimento</div>
+            </div>
+            <div class="card">
+              <div class="kpi-title">Principal gargalo</div>
+              <div class="kpi-value" id="kpiBottleneck">—</div>
+              <div class="muted">
+                <span class="badge" id="badgeWhy">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-grid">
+            <div class="card">
+              <div class="kpi-title">Impressões</div>
+              <div class="kpi-value" id="kpiImpr">—</div>
+              <div class="muted">Estimadas</div>
+            </div>
+            <div class="card">
+              <div class="kpi-title">Cliques</div>
+              <div class="kpi-value" id="kpiClicks">—</div>
+              <div class="muted">Estimados</div>
+            </div>
+            <div class="card">
+              <div class="kpi-title">Conversões</div>
+              <div class="kpi-value" id="kpiConv">—</div>
+              <div class="muted">Estimadas</div>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <div class="tab active" onclick="setTab('insights')">Insights</div>
+            <div class="tab" onclick="setTab('sim')">Simulações (+%)</div>
+            <div class="tab" onclick="setTab('export')">Export</div>
+          </div>
+
+          <div class="panel active" id="panel-insights">
+            <div class="two">
+              <div class="field" style="margin: 0">
+                <label>Diagnóstico rápido</label>
+                <ul
+                  class="muted"
+                  style="margin: 0; padding-left: 18px"
+                  id="insightsList"
+                ></ul>
+              </div>
+              <div class="field" style="margin: 0">
+                <label>Plano de ação recomendado</label>
+                <ul
+                  class="muted"
+                  style="margin: 0; padding-left: 18px"
+                  id="tipsList"
+                ></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="panel-sim">
+            <div class="field" style="margin: 0">
+              <label>Impacto ao melhorar um único ponto</label>
+              <div id="simBox"></div>
+              <div class="muted" style="margin-top: 10px">
+                Regra prática: melhorias em conversão e ticket costumam ser
+                “multiplicadores”. CTR é multiplicador principalmente em CPM.
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="panel-export">
+            <div class="field" style="margin: 0">
+              <label>Relatório (copiar/colar)</label>
+              <div class="k-actions">
+                <button
+                  class="btn-small"
+                  type="button"
+                  onclick="copyById('exportOut')"
+                >
+                  Copiar
+                </button>
+              </div>
+              <pre><code id="exportOut">—</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <footer>
+          Esse diagnóstico te ajuda a decidir: melhorar criativo (CTR), melhorar
+          landing (conversão) ou melhorar oferta (ticket/margem). Quer que eu
+          conecte isso com “CPC máximo” usando LTV/CAC também? Dá pra fazer a
+          próxima ferramenta.
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      /* ===== Helpers ===== */
+      function n(v) {
+        const x = Number(String(v).replace(",", "."));
+        return Number.isFinite(x) ? x : 0;
+      }
+      function formatInt(x) {
+        return Math.round(x).toLocaleString("pt-BR");
+      }
+      function formatMoney(x) {
+        return x.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+      }
+      function formatPct(x) {
+        return (
+          x.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) + "%"
+        );
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise((resolve) => {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          resolve();
+        });
+      }
+      function copyById(id) {
+        const t = document.getElementById(id)?.textContent || "";
+        if (!t || t === "—") {
+          alert("Nada para copiar ainda. Analise primeiro.");
+          return;
+        }
+        copyText(t).then(() => alert("Copiado!"));
+      }
+
+      function setTab(tab) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".panel")
+          .forEach((p) => p.classList.remove("active"));
+
+        if (tab === "insights") {
+          document.querySelectorAll(".tab")[0].classList.add("active");
+          document.getElementById("panel-insights").classList.add("active");
+        } else if (tab === "sim") {
+          document.querySelectorAll(".tab")[1].classList.add("active");
+          document.getElementById("panel-sim").classList.add("active");
+        } else {
+          document.querySelectorAll(".tab")[2].classList.add("active");
+          document.getElementById("panel-export").classList.add("active");
+        }
+      }
+
+      function toggleMode() {
+        const mode = document.getElementById("mode").value;
+        document.getElementById("fieldCpc").style.display =
+          mode === "cpc" ? "block" : "none";
+        document.getElementById("fieldCpm").style.display =
+          mode === "cpm" ? "block" : "none";
+        document.getElementById("result").style.display = "none";
+      }
+
+      function baseCalc(inputs) {
+        const { budget, mode, cpc, cpm, ctrPct, convPct, ticket } = inputs;
+
+        const ctr = ctrPct / 100;
+        const conv = convPct / 100;
+
+        let impressions = 0;
+        let clicks = 0;
+        let effectiveCpc = 0;
+
+        if (mode === "cpc") {
+          clicks = budget / cpc;
+          effectiveCpc = cpc;
+          impressions = ctr > 0 ? clicks / ctr : 0;
+        } else {
+          impressions = (budget / cpm) * 1000;
+          clicks = impressions * ctr;
+          effectiveCpc = clicks > 0 ? budget / clicks : 0;
+        }
+
+        const conversions = clicks * conv;
+        const revenue = conversions * ticket;
+        const roas = budget > 0 ? revenue / budget : 0;
+        const cpa = conversions > 0 ? budget / conversions : 0;
+
+        return {
+          impressions,
+          clicks,
+          conversions,
+          revenue,
+          roas,
+          cpa,
+          effectiveCpc,
+        };
+      }
+
+      function analyzeBottleneck(inputs) {
+        const uplift = inputs.uplift; // ex: 0.2
+        const base = baseCalc(inputs);
+
+        const tests = [
+          {
+            key: "CTR",
+            label: "CTR (criativo)",
+            apply: (x) => ({ ...x, ctrPct: x.ctrPct * (1 + uplift) }),
+          },
+          {
+            key: "CONV",
+            label: "Conversão (landing/oferta)",
+            apply: (x) => ({ ...x, convPct: x.convPct * (1 + uplift) }),
+          },
+          {
+            key: "TICKET",
+            label: "Ticket (oferta/upsell)",
+            apply: (x) => ({ ...x, ticket: x.ticket * (1 + uplift) }),
+          },
+        ];
+
+        // Se CPC mode, CTR impacta só impressões (não receita), então CTR não deve ser gargalo principal.
+        // Mas ainda pode ser útil para diagnóstico. Vamos manter, mas ponderar.
+        const results = tests.map((t) => {
+          const mod = t.apply(inputs);
+          const out = baseCalc(mod);
+          const deltaRevenue = out.revenue - base.revenue;
+          const deltaRoas = out.roas - base.roas;
+          return { ...t, out, deltaRevenue, deltaRoas };
+        });
+
+        // No modo CPC, CTR não muda cliques (logo não muda receita) -> delta ~ 0
+        // No modo CPM, CTR altera cliques e receita -> delta grande se CTR for baixo.
+
+        results.sort((a, b) => b.deltaRevenue - a.deltaRevenue);
+        const best = results[0];
+
+        return { base, results, best };
+      }
+
+      function validateInputs() {
+        const budget = n(document.getElementById("budget").value);
+        const mode = document.getElementById("mode").value;
+        const cpc = n(document.getElementById("cpc").value);
+        const cpm = n(document.getElementById("cpm").value);
+        const ctrPct = n(document.getElementById("ctr").value);
+        const convPct = n(document.getElementById("conv").value);
+        const ticket = n(document.getElementById("ticket").value);
+        const marginPct = n(document.getElementById("margin").value);
+        const upliftPct = n(document.getElementById("uplift").value);
+
+        if (budget <= 0 || convPct <= 0 || ticket <= 0) {
+          return {
+            ok: false,
+            msg: "Preencha investimento, conversão e ticket com valores maiores que zero.",
+          };
+        }
+        if (mode === "cpc" && cpc <= 0) {
+          return {
+            ok: false,
+            msg: "No modo CPC, preencha o CPC com valor maior que zero.",
+          };
+        }
+        if (mode === "cpm" && cpm <= 0) {
+          return {
+            ok: false,
+            msg: "No modo CPM, preencha o CPM com valor maior que zero.",
+          };
+        }
+        if (mode === "cpm" && ctrPct <= 0) {
+          return {
+            ok: false,
+            msg: "No modo CPM, o CTR é obrigatório (para estimar cliques).",
+          };
+        }
+
+        return {
+          ok: true,
+          budget,
+          mode,
+          cpc,
+          cpm,
+          ctrPct,
+          convPct,
+          ticket,
+          marginPct,
+          uplift: upliftPct / 100,
+        };
+      }
+
+      function bottleneckBadge(bestKey, mode) {
+        if (bestKey === "CTR") {
+          return mode === "cpm"
+            ? "Mais impacto no volume de cliques"
+            : "No CPC não muda receita (só impressões)";
+        }
+        if (bestKey === "CONV") {
+          return "Multiplicador do funil (landing/oferta)";
+        }
+        return "Aumenta receita por conversão (oferta/upsell)";
+      }
+
+      function analyze() {
+        const v = validateInputs();
+        if (!v.ok) {
+          alert(v.msg);
+          return null;
+        }
+
+        const { base, results, best } = analyzeBottleneck(v);
+
+        // lucro/ROI com margem (se houver)
+        let profit = null,
+          roi = null;
+        if (v.marginPct > 0) {
+          const m = v.marginPct / 100;
+          const grossProfit = base.revenue * m;
+          profit = grossProfit - v.budget;
+          roi = v.budget > 0 ? profit / v.budget : 0;
+        }
+
+        return { v, base, results, best, profit, roi };
+      }
+
+      function analisar() {
+        const r = analyze();
+        if (!r) return;
+
+        const { v, base, results, best } = r;
+
+        // KPIs
+        document.getElementById("kpiRevenue").textContent = formatMoney(
+          base.revenue,
+        );
+        document.getElementById("kpiRoas").textContent =
+          base.roas.toFixed(2) + "x";
+        document.getElementById("kpiBottleneck").textContent = best.label;
+        document.getElementById("badgeWhy").textContent = bottleneckBadge(
+          best.key,
+          v.mode,
+        );
+
+        document.getElementById("kpiImpr").textContent =
+          base.impressions > 0 ? formatInt(base.impressions) : "—";
+        document.getElementById("kpiClicks").textContent = formatInt(
+          base.clicks,
+        );
+        document.getElementById("kpiConv").textContent = formatInt(
+          base.conversions,
+        );
+
+        const modeLabel = v.mode === "cpc" ? "CPC" : "CPM";
+        document.getElementById("statusLine").textContent =
+          `Modelo: ${modeLabel} • Investimento: ${formatMoney(v.budget)} • Cliques: ${formatInt(base.clicks)} • Conversões: ${formatInt(base.conversions)} • CPC efetivo: ${base.effectiveCpc > 0 ? formatMoney(base.effectiveCpc) : "—"}`;
+
+        // Insights e plano
+        const insights = [];
+        const tips = [];
+
+        // leitura rápida
+        if (base.roas >= 3)
+          insights.push(
+            `ROAS saudável (${base.roas.toFixed(2)}x). Dá para escalar com controle de CPA.`,
+          );
+        else if (base.roas >= 1.5)
+          insights.push(
+            `ROAS ok (${base.roas.toFixed(2)}x). Ajustes podem melhorar muito.`,
+          );
+        else
+          insights.push(
+            `ROAS baixo (${base.roas.toFixed(2)}x). Priorize o gargalo antes de escalar.`,
+          );
+
+        if (v.mode === "cpm") {
+          if (v.ctrPct < 1)
+            insights.push(
+              `CTR baixo (${formatPct(v.ctrPct)}). Criativos/ângulos precisam de teste forte.`,
+            );
+          else
+            insights.push(
+              `CTR (${formatPct(v.ctrPct)}) parece ok. O próximo ganho pode estar em conversão/ticket.`,
+            );
+        } else {
+          if (v.ctrPct > 0)
+            insights.push(
+              `CTR informado (${formatPct(v.ctrPct)}). Útil para estimar impressões, mas no CPC cliques vêm do CPC.`,
+            );
+          else
+            insights.push(
+              "CTR não informado (ok no CPC). Impressões ficarão sem estimativa.",
+            );
+        }
+
+        if (v.convPct < 1)
+          insights.push(
+            `Conversão baixa (${formatPct(v.convPct)}): gargalo provável em landing/oferta/qualificação.`,
+          );
+        else if (v.convPct < 3)
+          insights.push(
+            `Conversão ok (${formatPct(v.convPct)}). Dá para melhorar com testes A/B e prova social.`,
+          );
+        else
+          insights.push(
+            `Conversão forte (${formatPct(v.convPct)}). Atenção: ao escalar pode cair.`,
+          );
+
+        tips.push(
+          `Prioridade: atacar "${best.label}" primeiro (maior ganho ao melhorar ${formatPct(v.uplift * 100)}).`,
+        );
+
+        if (best.key === "CTR") {
+          tips.push(
+            "Ações: 5–10 criativos novos, novos ganchos, variação de oferta, criativo UGC, e segmentações por intenção.",
+          );
+          tips.push(
+            "Ações: alinhar promessa do anúncio com a página (mensagem consistente).",
+          );
+        } else if (best.key === "CONV") {
+          tips.push(
+            "Ações: melhorar landing (headline, CTA, prova social, velocidade, clareza).",
+          );
+          tips.push(
+            "Ações: reduzir fricção (menos campos, WhatsApp, oferta mais direta).",
+          );
+        } else {
+          tips.push(
+            "Ações: aumentar ticket (upsell, pacote, plano, recorrência, bundles).",
+          );
+          tips.push(
+            "Ações: melhorar percepção de valor (benefícios, garantias, diferenciais).",
+          );
+        }
+
+        // margem
+        if (v.marginPct > 0) {
+          const roiPct = r.roi * 100;
+          insights.push(`ROI (com margem) estimado: ${roiPct.toFixed(1)}%.`);
+          tips.push(
+            "Se ROI não fechar mesmo com ROAS bom: reveja margem, custos e LTV.",
+          );
+        } else {
+          tips.push(
+            "Preencha a margem para ter ROI real (lucro) e não só ROAS (receita).",
+          );
+        }
+
+        // Render lists
+        const insightsList = document.getElementById("insightsList");
+        insightsList.innerHTML = "";
+        insights.forEach((t) => {
+          const li = document.createElement("li");
+          li.textContent = t;
+          insightsList.appendChild(li);
+        });
+
+        const tipsList = document.getElementById("tipsList");
+        tipsList.innerHTML = "";
+        tips.forEach((t) => {
+          const li = document.createElement("li");
+          li.textContent = t;
+          tipsList.appendChild(li);
+        });
+
+        // Simulações
+        const simBox = document.getElementById("simBox");
+        simBox.innerHTML = "";
+        results.forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const newRev = item.out.revenue;
+          const delta = item.deltaRevenue;
+
+          row.innerHTML = `
+      <div style="flex:1;">
+        <span class="tag">+${formatPct(v.uplift * 100)} em ${item.label}</span>
+        <p class="mini" style="margin-top:8px;">
+          Receita: ${formatMoney(newRev)} (${delta >= 0 ? "+" : ""}${formatMoney(delta)}) •
+          ROAS: ${item.out.roas.toFixed(2)}x (${item.deltaRoas >= 0 ? "+" : ""}${item.deltaRoas.toFixed(2)}x) •
+          Conversões: ${formatInt(item.out.conversions)}
+        </p>
+      </div>
+    `;
+          simBox.appendChild(row);
+        });
+
+        // Export
+        const exportText = `Diagnóstico de Gargalo do Funil (Ads/SEO)
+
+Entradas:
+- Investimento: ${formatMoney(v.budget)}
+- Modelo: ${modeLabel}
+- ${modeLabel}: ${v.mode === "cpc" ? formatMoney(v.cpc) : formatMoney(v.cpm)}
+- CTR: ${v.ctrPct > 0 ? formatPct(v.ctrPct) : "—"}
+- Conversão: ${formatPct(v.convPct)}
+- Ticket: ${formatMoney(v.ticket)}
+- Margem: ${v.marginPct > 0 ? formatPct(v.marginPct) : "—"}
+- Simulação: +${formatPct(v.uplift * 100)}
+
+Resultados atuais:
+- Impressões: ${base.impressions > 0 ? formatInt(base.impressions) : "—"}
+- Cliques: ${formatInt(base.clicks)}
+- Conversões: ${formatInt(base.conversions)}
+- Receita: ${formatMoney(base.revenue)}
+- ROAS: ${base.roas.toFixed(2)}x
+- CPA: ${base.cpa > 0 ? formatMoney(base.cpa) : "—"}
+${v.marginPct > 0 ? `- ROI (com margem): ${(r.roi * 100).toFixed(1)}%` : ""}
+
+Principal gargalo:
+- ${best.label} (${bottleneckBadge(best.key, v.mode)})
+
+Simulações (+${formatPct(v.uplift * 100)}):
+${results.map((item) => `- ${item.label}: Receita ${formatMoney(item.out.revenue)} (${item.deltaRevenue >= 0 ? "+" : ""}${formatMoney(item.deltaRevenue)}) | ROAS ${item.out.roas.toFixed(2)}x`).join("\n")}
+
+Plano recomendado:
+${tips.map((t) => "- " + t).join("\n")}
+`;
+        document.getElementById("exportOut").textContent = exportText;
+
+        document.getElementById("result").style.display = "block";
+        setTab("insights");
+      }
+
+      function copiarRelatorio() {
+        const t = document.getElementById("exportOut")?.textContent || "";
+        if (!t || t === "—") {
+          alert("Analise primeiro para gerar o relatório.");
+          return;
+        }
+        copyText(t).then(() => alert("Relatório copiado!"));
+      }
+
+      function limpar() {
+        ["budget", "cpc", "cpm", "ctr", "conv", "ticket", "margin"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        document.getElementById("mode").value = "cpc";
+        document.getElementById("uplift").value = "20";
+        toggleMode();
+        document.getElementById("result").style.display = "none";
+      }
+
+      function exemplo() {
+        document.getElementById("budget").value = 3000;
+        document.getElementById("mode").value = "cpm";
+        toggleMode();
+        document.getElementById("cpm").value = 35;
+        document.getElementById("ctr").value = 1.2;
+        document.getElementById("conv").value = 2.0;
+        document.getElementById("ticket").value = 250;
+        document.getElementById("margin").value = 40;
+        document.getElementById("uplift").value = "20";
+        analisar();
+      }
+
+      // init
+      toggleMode();
+    </script>
+  </body>
+</html>

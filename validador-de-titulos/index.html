@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Validador de Títulos H1–H6</title>
+
+<style>
+/* ===== PADRÃO VISUAL + BLINDADO CONTRA CSS DO TEMA ===== */
+.h-tool * { box-sizing: border-box; }
+
+.h-tool{
+  font-family: Arial, sans-serif !important;
+  background:#f9f9f9 !important;
+  padding:20px !important;
+  color:#222 !important;
+}
+
+.h-tool .container{
+  max-width: 980px;
+  margin:auto;
+  background:#fff !important;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.06);
+  color:#222 !important;
+}
+
+.h-tool h1,.h-tool h2,.h-tool h3,.h-tool p,.h-tool label,
+.h-tool small,.h-tool footer,.h-tool li,.h-tool strong,
+.h-tool span,.h-tool div,.h-tool pre,.h-tool code{
+  color:#222 !important;
+}
+
+.h-tool h1{ margin:0 0 8px 0; }
+.h-tool p{ margin:0 0 18px 0; color:#333 !important; line-height:1.5; }
+
+.h-tool .grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+@media (max-width: 900px){
+  .h-tool .grid{ grid-template-columns:1fr; }
+}
+
+.h-tool .field{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.h-tool label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.h-tool input[type="text"], .h-tool textarea, .h-tool select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+  background:#fff !important;
+  color:#222 !important;
+  outline:none;
+}
+
+.h-tool textarea{ min-height: 170px; resize: vertical; }
+
+.h-tool input::placeholder, .h-tool textarea::placeholder{ color:#666 !important; }
+
+.h-tool .hint{
+  display:block;
+  margin-top:8px;
+  font-size:12.5px;
+  color:#666 !important;
+  line-height:1.35;
+}
+
+.h-tool .actions{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+
+.h-tool button{
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.h-tool .btn-primary{
+  background:#007acc;
+  color:#fff !important;
+}
+.h-tool .btn-primary:hover{ background:#005fa3; }
+
+.h-tool .btn-ghost{
+  background:#f1f3f5;
+  color:#222 !important;
+}
+.h-tool .btn-ghost:hover{ background:#e9ecef; }
+
+.h-tool .result{
+  margin-top:20px;
+  background:#eef6ff !important;
+  border-left:5px solid #007acc;
+  padding:16px;
+  border-radius:10px;
+  color:#222 !important;
+  display:none;
+}
+
+.h-tool .result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+@media (max-width: 900px){
+  .h-tool .result-grid{ grid-template-columns:1fr; }
+}
+
+.h-tool .card{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.h-tool .card .kpi-title{
+  font-size:13px;
+  color:#666 !important;
+  margin-bottom:6px;
+}
+
+.h-tool .card .kpi-value{
+  font-size:20px;
+  font-weight:800;
+  color:#222 !important;
+}
+
+.h-tool .muted{
+  color:#666 !important;
+  font-size:12.5px;
+  line-height:1.4;
+}
+
+.h-tool .badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:700;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  color:#222 !important;
+}
+
+.h-tool pre{
+  margin:0;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #e7e7e7;
+  background:#fff !important;
+  overflow:auto;
+  max-height:320px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.h-tool code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+}
+
+.h-tool .list{
+  margin:0;
+  padding-left:18px;
+}
+
+.h-tool .two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+@media (max-width: 900px){
+  .h-tool .two{ grid-template-columns:1fr; }
+}
+
+.h-tool .row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  background:#fff !important;
+}
+
+.h-tool .row + .row{ margin-top:10px; }
+
+.h-tool .tag{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid #dbe7ff;
+  background:#eef6ff !important;
+  font-weight:800;
+  font-size:12.5px;
+  color:#222 !important;
+  white-space:nowrap;
+}
+
+.h-tool footer{
+  margin-top:24px;
+  font-size:12.5px;
+  color:#777 !important;
+  line-height:1.45;
+}
+</style>
+</head>
+
+<body>
+<div class="h-tool">
+  <div class="container">
+    <h1>Validador de Títulos H1–H6</h1>
+    <p>
+      Cole a URL de uma página (se o site permitir leitura) ou cole o HTML.
+      A ferramenta lista todos os <strong>H1, H2, H3, H4, H5 e H6</strong>, conta ocorrências e aponta problemas comuns.
+    </p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="url">Analisar por URL (opcional)</label>
+        <input type="text" id="url" placeholder="Ex: https://seudominio.com/pagina" />
+        <small class="hint">
+          Se aparecer erro por bloqueio (CORS), use o modo HTML abaixo: abra o código-fonte da página, copie e cole.
+        </small>
+      </div>
+
+      <div class="field">
+        <label for="mode">Modo</label>
+        <select id="mode" onchange="toggleMode()">
+          <option value="url">Buscar via URL</option>
+          <option value="html">Colar HTML</option>
+        </select>
+        <small class="hint">Recomendado: HTML (sempre funciona).</small>
+      </div>
+
+      <div class="field" style="grid-column: 1 / -1;">
+        <label for="html">HTML da página (use se estiver no modo HTML)</label>
+        <textarea id="html" placeholder="Cole aqui o HTML completo da página..."></textarea>
+        <small class="hint">Dica: clique com o botão direito no site → “Exibir código-fonte” → copie tudo.</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="analisar()">Validar títulos</button>
+      <button class="btn-ghost" type="button" onclick="exemplo()">Exemplo</button>
+      <button class="btn-ghost" type="button" onclick="limpar()">Limpar</button>
+      <button class="btn-ghost" type="button" onclick="copiarRelatorio()">Copiar relatório</button>
+    </div>
+
+    <div class="result" id="result">
+      <strong>Resumo</strong>
+      <div class="muted" id="statusLine" style="margin-top:6px;"></div>
+
+      <div class="result-grid">
+        <div class="card">
+          <div class="kpi-title">H1</div>
+          <div class="kpi-value" id="kpiH1">—</div>
+          <div class="muted"><span class="badge" id="badgeH1">—</span></div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Total de headings (H1–H6)</div>
+          <div class="kpi-value" id="kpiTotal">—</div>
+          <div class="muted">Quantidade encontrada</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Possíveis problemas</div>
+          <div class="kpi-value" id="kpiIssues">—</div>
+          <div class="muted">Erros e alertas</div>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="field" style="margin:0;">
+          <label>Diagnóstico</label>
+          <ul class="list" id="issuesList"></ul>
+        </div>
+        <div class="field" style="margin:0;">
+          <label>Dicas práticas</label>
+          <ul class="list" id="tipsList"></ul>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:12px;">
+        <label>Headings encontrados</label>
+        <div id="headingsBox"></div>
+      </div>
+
+      <div class="field" style="margin-top:12px;">
+        <label>HTML analisado (trecho / debug)</label>
+        <pre><code id="debugHtml">—</code></pre>
+        <div class="muted" style="margin-top:8px;">
+          Observação: a ferramenta lê o HTML “como está”. Se headings forem gerados via JS depois do carregamento,
+          o modo URL pode não capturar. O modo HTML costuma ser mais fiel ao que você copiou do código-fonte.
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Boa prática: ter <strong>1 H1</strong> principal, H2 para seções, H3 para subseções. Evite pular níveis (ex.: H2 → H4).
+      Em WordPress/Elementor, às vezes o logo/hero vira H1 duplicado: essa ferramenta pega isso rápido.
+    </footer>
+  </div>
+</div>
+
+<script>
+function esc(s){
+  return (s || "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function normalizeUrl(input){
+  const v = (input || "").trim();
+  if (!v) return "";
+  try{
+    const u = new URL(v);
+    return u.href;
+  }catch(e){
+    // tenta adicionar https
+    try{
+      const u = new URL("https://" + v);
+      return u.href;
+    }catch(e2){
+      return "";
+    }
+  }
+}
+
+function timeoutFetch(url, ms){
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { signal: controller.signal, cache: "no-store" })
+    .finally(() => clearTimeout(id));
+}
+
+function toggleMode(){
+  const mode = document.getElementById("mode").value;
+  const isHtml = mode === "html";
+  document.getElementById("url").disabled = isHtml;
+  document.getElementById("html").disabled = !isHtml;
+}
+
+function extractHeadingsFromHtml(html){
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  const headings = [];
+  for (let lvl = 1; lvl <= 6; lvl++){
+    doc.querySelectorAll("h" + lvl).forEach(h => {
+      const text = (h.textContent || "").replace(/\s+/g, " ").trim();
+      headings.push({ level: lvl, text: text || "(sem texto)" });
+    });
+  }
+  // mantém ordem real do DOM
+  const all = Array.from(doc.querySelectorAll("h1,h2,h3,h4,h5,h6"));
+  const ordered = all.map(h => {
+    const lvl = Number(h.tagName.replace("H","")) || 0;
+    const text = (h.textContent || "").replace(/\s+/g, " ").trim();
+    return { level: lvl, text: text || "(sem texto)" };
+  }).filter(x => x.level >= 1 && x.level <= 6);
+
+  return ordered;
+}
+
+function summarize(headings){
+  const counts = {1:0,2:0,3:0,4:0,5:0,6:0};
+  headings.forEach(h => counts[h.level]++);
+  const total = Object.values(counts).reduce((a,b)=>a+b,0);
+
+  // checar saltos (ex: H2 -> H4)
+  const jumps = [];
+  for (let i=1;i<headings.length;i++){
+    const prev = headings[i-1].level;
+    const cur = headings[i].level;
+    if (cur - prev > 1){
+      jumps.push({ from: prev, to: cur, index: i });
+    }
+  }
+
+  return { counts, total, jumps };
+}
+
+function h1BadgeText(n){
+  if (n === 1) return "OK (1 H1)";
+  if (n === 0) return "Sem H1";
+  return "H1 duplicado";
+}
+
+function buildIssuesAndTips(summary){
+  const issues = [];
+  const tips = [];
+
+  const h1 = summary.counts[1];
+
+  if (h1 === 0){
+    issues.push("Não foi encontrado nenhum H1 na página.");
+    tips.push("Inclua 1 H1 principal com a palavra-chave e intenção da página.");
+  } else if (h1 > 1){
+    issues.push(`Foram encontrados ${h1} H1 (H1 duplicado).`);
+    tips.push("Mantenha apenas 1 H1. Em WordPress/Elementor, logo/hero às vezes vira H1 duplicado.");
+  } else {
+    tips.push("H1 OK: mantenha o H1 como o tema principal da página.");
+  }
+
+  if (summary.jumps.length){
+    issues.push(`Foram detectados saltos de hierarquia (ex.: H2 → H4): ${summary.jumps.length} ocorrência(s).`);
+    tips.push("Evite pular níveis. Use H2 para seções e H3 para subseções antes de H4.");
+  } else {
+    tips.push("Hierarquia OK: não foram detectados saltos grandes entre níveis.");
+  }
+
+  // warning se não tem H2
+  if (summary.counts[2] === 0 && summary.total > 0){
+    issues.push("Nenhum H2 encontrado — estrutura pode ficar fraca para SEO e leitura.");
+    tips.push("Crie H2 para organizar tópicos e melhorar escaneabilidade.");
+  }
+
+  // muitos headings (sinal de template)
+  if (summary.total > 60){
+    issues.push("Muitos headings detectados (possível template, menu ou blocos repetidos com H-tags).");
+    tips.push("Revise headings em menus/rodapé e evite usar H-tags apenas para estilização.");
+  }
+
+  if (!issues.length){
+    issues.push("Nenhum problema crítico detectado.");
+  }
+
+  return { issues, tips };
+}
+
+function renderHeadings(headings){
+  const box = document.getElementById("headingsBox");
+  box.innerHTML = "";
+
+  if (!headings.length){
+    const div = document.createElement("div");
+    div.className = "muted";
+    div.textContent = "Nenhum H1–H6 encontrado.";
+    box.appendChild(div);
+    return;
+  }
+
+  headings.forEach((h, i) => {
+    const row = document.createElement("div");
+    row.className = "row";
+
+    const left = document.createElement("div");
+    left.style.display = "flex";
+    left.style.gap = "10px";
+    left.style.alignItems = "center";
+
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = "H" + h.level;
+
+    const txt = document.createElement("div");
+    txt.textContent = h.text;
+
+    left.appendChild(tag);
+    left.appendChild(txt);
+
+    const right = document.createElement("div");
+    right.className = "muted";
+    right.textContent = "#" + (i+1);
+
+    row.appendChild(left);
+    row.appendChild(right);
+    box.appendChild(row);
+  });
+}
+
+async function analisar(){
+  const mode = document.getElementById("mode").value;
+
+  // reset
+  document.getElementById("result").style.display = "block";
+  document.getElementById("statusLine").textContent = "Processando...";
+  document.getElementById("debugHtml").textContent = "—";
+  document.getElementById("kpiH1").textContent = "—";
+  document.getElementById("badgeH1").textContent = "—";
+  document.getElementById("kpiTotal").textContent = "—";
+  document.getElementById("kpiIssues").textContent = "—";
+  document.getElementById("headingsBox").innerHTML = "";
+  document.getElementById("issuesList").innerHTML = "";
+  document.getElementById("tipsList").innerHTML = "";
+
+  let html = "";
+
+  if (mode === "url"){
+    const url = normalizeUrl(document.getElementById("url").value);
+    if (!url){
+      alert("Informe uma URL válida ou mude para o modo HTML.");
+      return;
+    }
+    try{
+      const resp = await timeoutFetch(url, 15000);
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      html = await resp.text();
+      document.getElementById("statusLine").textContent =
+        `URL analisada: ${url} (se o site bloquear leitura, use o modo HTML).`;
+    }catch(e){
+      document.getElementById("statusLine").textContent =
+        "Não foi possível buscar a URL (provável bloqueio CORS). Use o modo HTML.";
+      alert("Falhou ao buscar a URL (bloqueio do navegador/CORS é comum). Use o modo HTML e cole o código-fonte.");
+      return;
+    }
+  } else {
+    html = (document.getElementById("html").value || "").trim();
+    if (!html){
+      alert("Cole o HTML da página para analisar.");
+      return;
+    }
+    document.getElementById("statusLine").textContent = "HTML colado analisado com sucesso.";
+  }
+
+  // debug (trecho)
+  const snippet = html.slice(0, 6000);
+  document.getElementById("debugHtml").innerHTML = esc(snippet) + (html.length > 6000 ? "\n\n... (cortado)" : "");
+
+  const headings = extractHeadingsFromHtml(html);
+  const summary = summarize(headings);
+
+  document.getElementById("kpiH1").textContent = String(summary.counts[1]);
+  document.getElementById("badgeH1").textContent = h1BadgeText(summary.counts[1]);
+  document.getElementById("kpiTotal").textContent = String(summary.total);
+
+  const { issues, tips } = buildIssuesAndTips(summary);
+  document.getElementById("kpiIssues").textContent = String(Math.max(0, issues.filter(i => !i.includes("Nenhum problema crítico")).length));
+
+  // render lists
+  const issuesEl = document.getElementById("issuesList");
+  issuesEl.innerHTML = "";
+  issues.forEach(t => {
+    const li = document.createElement("li");
+    li.textContent = t;
+    issuesEl.appendChild(li);
+  });
+
+  const tipsEl = document.getElementById("tipsList");
+  tipsEl.innerHTML = "";
+  tips.forEach(t => {
+    const li = document.createElement("li");
+    li.textContent = t;
+    tipsEl.appendChild(li);
+  });
+
+  renderHeadings(headings);
+  document.getElementById("result").style.display = "block";
+}
+
+function exemplo(){
+  document.getElementById("mode").value = "html";
+  toggleMode();
+  document.getElementById("html").value =
+`<!doctype html><html><head><title>Exemplo</title></head><body>
+<h1>Agência de SEO no Rio de Janeiro</h1>
+<h2>O que fazemos</h2>
+<h3>SEO Técnico</h3>
+<h3>Conteúdo</h3>
+<h2>Serviços</h2>
+<h4>Headings pulados (H2 → H4)</h4>
+</body></html>`;
+  analisar();
+}
+
+function limpar(){
+  document.getElementById("url").value = "";
+  document.getElementById("html").value = "";
+  document.getElementById("mode").value = "url";
+  toggleMode();
+  document.getElementById("result").style.display = "none";
+}
+
+function copiarRelatorio(){
+  const h1 = document.getElementById("kpiH1").textContent;
+  const total = document.getElementById("kpiTotal").textContent;
+  const issues = Array.from(document.querySelectorAll("#issuesList li")).map(li => li.textContent).filter(Boolean);
+  const tips = Array.from(document.querySelectorAll("#tipsList li")).map(li => li.textContent).filter(Boolean);
+
+  const headings = Array.from(document.querySelectorAll("#headingsBox .row")).map(row => {
+    const tag = row.querySelector(".tag")?.textContent || "";
+    const text = row.querySelector("div div")?.textContent || "";
+    return `${tag}: ${text}`;
+  }).filter(Boolean);
+
+  const text =
+`Validador de Títulos H1–H6
+
+Resumo:
+- H1: ${h1}
+- Total headings: ${total}
+
+Problemas/alertas:
+${issues.length ? ("- " + issues.join("\n- ")) : "—"}
+
+Dicas:
+${tips.length ? ("- " + tips.join("\n- ")) : "—"}
+
+Headings encontrados:
+${headings.length ? ("- " + headings.join("\n- ")) : "—"}
+`;
+
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(() => alert("Relatório copiado!"))
+      .catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  alert("Relatório copiado!");
+}
+
+// init
+toggleMode();
+</script>
+</body>
+</html>

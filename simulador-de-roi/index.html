@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Simulador de ROI – Tráfego Pago</title>
+
+<style>
+/* ===== PADRÃO VISUAL + BLINDADO CONTRA CSS DO TEMA ===== */
+.roi-tool *{ box-sizing:border-box; }
+
+.roi-tool{
+  font-family: Arial, sans-serif !important;
+  background:#f9f9f9 !important;
+  padding:20px !important;
+  color:#222 !important;
+}
+
+.roi-tool .container{
+  max-width:1100px;
+  margin:auto;
+  background:#fff !important;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.06);
+  color:#222 !important;
+}
+
+.roi-tool h1,.roi-tool h2,.roi-tool h3,.roi-tool p,.roi-tool label,
+.roi-tool small,.roi-tool footer,.roi-tool li,.roi-tool strong,
+.roi-tool span,.roi-tool div,.roi-tool pre,.roi-tool code{
+  color:#222 !important;
+}
+
+.roi-tool h1{ margin:0 0 8px 0; }
+.roi-tool p{ margin:0 0 18px 0; color:#333 !important; line-height:1.5; }
+
+.roi-tool .grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media (max-width: 980px){
+  .roi-tool .grid{ grid-template-columns:1fr; }
+}
+
+.roi-tool .field{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.roi-tool label{
+  display:block;
+  font-weight:900;
+  margin-bottom:8px;
+}
+
+.roi-tool input[type="number"], .roi-tool input[type="text"], .roi-tool select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+  background:#fff !important;
+  color:#222 !important;
+  outline:none;
+}
+
+.roi-tool input::placeholder{ color:#666 !important; }
+
+.roi-tool .hint{
+  display:block;
+  margin-top:8px;
+  font-size:12.5px;
+  color:#666 !important;
+  line-height:1.35;
+}
+
+.roi-tool .actions{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+
+.roi-tool button{
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:900;
+}
+
+.roi-tool .btn-primary{
+  background:#007acc;
+  color:#fff !important;
+}
+.roi-tool .btn-primary:hover{ background:#005fa3; }
+
+.roi-tool .btn-ghost{
+  background:#f1f3f5;
+  color:#222 !important;
+}
+.roi-tool .btn-ghost:hover{ background:#e9ecef; }
+
+.roi-tool .result{
+  margin-top:20px;
+  background:#eef6ff !important;
+  border-left:5px solid #007acc;
+  padding:16px;
+  border-radius:10px;
+  color:#222 !important;
+  display:none;
+}
+
+.roi-tool .result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+@media (max-width: 980px){
+  .roi-tool .result-grid{ grid-template-columns:1fr; }
+}
+
+.roi-tool .card{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.roi-tool .card .kpi-title{
+  font-size:13px;
+  color:#666 !important;
+  margin-bottom:6px;
+}
+
+.roi-tool .card .kpi-value{
+  font-size:20px;
+  font-weight:900;
+  color:#222 !important;
+}
+
+.roi-tool .muted{
+  color:#666 !important;
+  font-size:12.5px;
+  line-height:1.4;
+}
+
+.roi-tool .badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:900;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  color:#222 !important;
+}
+
+.roi-tool .two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+@media (max-width: 980px){
+  .roi-tool .two{ grid-template-columns:1fr; }
+}
+
+.roi-tool .row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  background:#fff !important;
+}
+.roi-tool .row + .row{ margin-top:10px; }
+
+.roi-tool .tag{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid #dbe7ff;
+  background:#eef6ff !important;
+  font-weight:900;
+  font-size:12.5px;
+  color:#222 !important;
+  white-space:nowrap;
+}
+
+.roi-tool .mini{
+  margin:0;
+  font-size:13px;
+  color:#555 !important;
+  line-height:1.35;
+}
+
+.roi-tool .tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.roi-tool .tab{
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  cursor:pointer;
+  font-weight:900;
+  font-size:14px;
+}
+.roi-tool .tab.active{
+  background:#eef6ff !important;
+  border-color:#007acc;
+}
+.roi-tool .panel{ display:none; margin-top:12px; }
+.roi-tool .panel.active{ display:block; }
+
+.roi-tool pre{
+  margin:0;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #e7e7e7;
+  background:#fff !important;
+  overflow:auto;
+  max-height:420px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.roi-tool code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size:13px;
+}
+
+.roi-tool .btn-small{
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  color:#222 !important;
+  padding:8px 10px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:900;
+  font-size:13px;
+}
+.roi-tool .btn-small:hover{
+  background:#eef6ff !important;
+  border-color:#007acc;
+}
+
+.roi-tool .k-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.roi-tool footer{
+  margin-top:24px;
+  font-size:12.5px;
+  color:#777 !important;
+  line-height:1.45;
+}
+</style>
+</head>
+
+<body>
+<div class="roi-tool">
+  <div class="container">
+    <h1>Simulador de ROI – Tráfego Pago</h1>
+    <p>
+      Simule ROI de campanhas (Meta Ads / Google Ads) com <strong>orçamento</strong>, <strong>CPC/CPM</strong>, <strong>CTR</strong>,
+      <strong>taxa de conversão</strong>, <strong>ticket</strong> e <strong>margem</strong>. Inclui melhorias: modo CPC/CPM,
+      cálculo de <strong>ROAS</strong>, <strong>CPA</strong>, ponto de equilíbrio e export para copiar/colar.
+    </p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="mode">Modelo de compra</label>
+        <select id="mode" onchange="toggleMode()">
+          <option value="cpc" selected>CPC (custo por clique)</option>
+          <option value="cpm">CPM (custo por mil impressões)</option>
+        </select>
+        <small class="hint">CPC: você informa o valor do clique. CPM: você informa custo por 1.000 impressões (CTR vira essencial).</small>
+      </div>
+
+      <div class="field">
+        <label for="budget">Orçamento (R$)</label>
+        <input type="number" id="budget" placeholder="Ex: 3000" min="0" step="0.01" />
+        <small class="hint">Quanto você pretende investir no período (mês/campanha).</small>
+      </div>
+
+      <div class="field" id="fieldCpc">
+        <label for="cpc">CPC médio (R$)</label>
+        <input type="number" id="cpc" placeholder="Ex: 2.50" min="0" step="0.01" />
+        <small class="hint">Custo médio por clique (estimativa). Se não tiver, use benchmark e ajuste depois.</small>
+      </div>
+
+      <div class="field" id="fieldCpm" style="display:none;">
+        <label for="cpm">CPM médio (R$)</label>
+        <input type="number" id="cpm" placeholder="Ex: 35" min="0" step="0.01" />
+        <small class="hint">Custo por 1.000 impressões. CTR define quantos cliques isso vira.</small>
+      </div>
+
+      <div class="field">
+        <label for="ctr">CTR (%)</label>
+        <input type="number" id="ctr" placeholder="Ex: 2.0" min="0" step="0.01" />
+        <small class="hint">Obrigatório no modo CPM. No modo CPC, serve para estimar impressões.</small>
+      </div>
+
+      <div class="field">
+        <label for="conv">Taxa de conversão (%)</label>
+        <input type="number" id="conv" placeholder="Ex: 2" min="0" step="0.01" />
+        <small class="hint">Percentual de cliques que vira venda/lead.</small>
+      </div>
+
+      <div class="field">
+        <label for="ticket">Ticket médio (R$)</label>
+        <input type="number" id="ticket" placeholder="Ex: 250" min="0" step="0.01" />
+        <small class="hint">Valor médio por conversão (venda) ou valor atribuído ao lead.</small>
+      </div>
+
+      <div class="field">
+        <label for="margin">Margem (%) (opcional)</label>
+        <input type="number" id="margin" placeholder="Ex: 40" min="0" step="0.01" />
+        <small class="hint">Se preencher, calculamos lucro, ROI real e ponto de equilíbrio por venda.</small>
+      </div>
+
+      <div class="field">
+        <label for="period">Período (opcional)</label>
+        <select id="period">
+          <option value="mensal" selected>Mensal</option>
+          <option value="campanha">Campanha</option>
+          <option value="semanal">Semanal</option>
+        </select>
+        <small class="hint">Apenas para rotular o relatório.</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="calcular()">Calcular ROI</button>
+      <button class="btn-ghost" type="button" onclick="exemplo()">Exemplo</button>
+      <button class="btn-ghost" type="button" onclick="limpar()">Limpar</button>
+      <button class="btn-ghost" type="button" onclick="copiarRelatorio()">Copiar relatório</button>
+    </div>
+
+    <div class="result" id="result">
+      <strong>Resultado</strong>
+      <div class="muted" id="statusLine" style="margin-top:6px;"></div>
+
+      <div class="result-grid">
+        <div class="card">
+          <div class="kpi-title">Receita estimada</div>
+          <div class="kpi-value" id="kpiRevenue">—</div>
+          <div class="muted">Conversões × Ticket</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">ROAS</div>
+          <div class="kpi-value" id="kpiRoas">—</div>
+          <div class="muted">Receita ÷ Investimento</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">CPA (custo por conversão)</div>
+          <div class="kpi-value" id="kpiCpa">—</div>
+          <div class="muted">Investimento ÷ Conversões</div>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <div class="card">
+          <div class="kpi-title">Impressões</div>
+          <div class="kpi-value" id="kpiImpr">—</div>
+          <div class="muted">Estimadas</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Cliques</div>
+          <div class="kpi-value" id="kpiClicks">—</div>
+          <div class="muted">Estimados</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Conversões</div>
+          <div class="kpi-value" id="kpiConv">—</div>
+          <div class="muted"><span class="badge" id="badgeQuality">—</span></div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="setTab('insights')">Insights</div>
+        <div class="tab" onclick="setTab('breakdown')">Detalhamento</div>
+        <div class="tab" onclick="setTab('export')">Export</div>
+      </div>
+
+      <div class="panel active" id="panel-insights">
+        <div class="two">
+          <div class="field" style="margin:0;">
+            <label>Diagnóstico rápido</label>
+            <ul class="muted" style="margin:0; padding-left:18px;" id="insightsList"></ul>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Melhorias sugeridas</label>
+            <ul class="muted" style="margin:0; padding-left:18px;" id="tipsList"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-breakdown">
+        <div class="field" style="margin:0;">
+          <label>Detalhamento do cálculo</label>
+          <div id="breakdownBox"></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-export">
+        <div class="field" style="margin:0;">
+          <label>Relatório (copiar/colar)</label>
+          <div class="k-actions">
+            <button class="btn-small" type="button" onclick="copyById('exportOut')">Copiar</button>
+          </div>
+          <pre><code id="exportOut">—</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Dica: se ROAS está bom mas ROI não fecha, o problema costuma ser <strong>margem baixa</strong> ou <strong>CPA alto</strong>.
+      Ajuste criativos/segmentação (CTR) e página/oferta (conversão).
+    </footer>
+  </div>
+</div>
+
+<script>
+/* ===== Helpers ===== */
+function n(v){
+  const x = Number(String(v).replace(",", "."));
+  return Number.isFinite(x) ? x : 0;
+}
+function formatInt(x){ return Math.round(x).toLocaleString("pt-BR"); }
+function formatMoney(x){ return x.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}); }
+function formatPct(x){ return x.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}) + "%"; }
+
+function copyText(text){
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise((resolve)=>{
+    const ta=document.createElement("textarea");
+    ta.value=text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    resolve();
+  });
+}
+function copyById(id){
+  const t = (document.getElementById(id)?.textContent || "");
+  if (!t || t === "—"){ alert("Nada para copiar ainda. Calcule primeiro."); return; }
+  copyText(t).then(()=>alert("Copiado!"));
+}
+
+function setTab(tab){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+
+  if (tab === "insights"){
+    document.querySelectorAll(".tab")[0].classList.add("active");
+    document.getElementById("panel-insights").classList.add("active");
+  } else if (tab === "breakdown"){
+    document.querySelectorAll(".tab")[1].classList.add("active");
+    document.getElementById("panel-breakdown").classList.add("active");
+  } else {
+    document.querySelectorAll(".tab")[2].classList.add("active");
+    document.getElementById("panel-export").classList.add("active");
+  }
+}
+
+function toggleMode(){
+  const mode = document.getElementById("mode").value;
+  const cpcField = document.getElementById("fieldCpc");
+  const cpmField = document.getElementById("fieldCpm");
+
+  if (mode === "cpc"){
+    cpcField.style.display = "block";
+    cpmField.style.display = "none";
+  } else {
+    cpcField.style.display = "none";
+    cpmField.style.display = "block";
+  }
+  document.getElementById("result").style.display = "none";
+}
+
+function qualityBadge(roas, roi){
+  // texto neutro (sem depender de cores)
+  if (roas >= 4) return "Excelente";
+  if (roas >= 2) return "Bom";
+  if (roas >= 1) return "No limite";
+  return "Baixo";
+}
+
+function calc(){
+  const mode = document.getElementById("mode").value;
+  const budget = n(document.getElementById("budget").value);
+  const cpc = n(document.getElementById("cpc").value);
+  const cpm = n(document.getElementById("cpm").value);
+  const ctrPct = n(document.getElementById("ctr").value);
+  const convPct = n(document.getElementById("conv").value);
+  const ticket = n(document.getElementById("ticket").value);
+  const marginPct = n(document.getElementById("margin").value);
+  const period = document.getElementById("period").value;
+
+  if (budget <= 0 || convPct <= 0 || ticket <= 0){
+    return { ok:false, msg:"Preencha orçamento, conversão e ticket com valores maiores que zero." };
+  }
+
+  const ctr = ctrPct / 100;
+  const conv = convPct / 100;
+
+  let clicks = 0;
+  let impressions = 0;
+  let effectiveCpc = 0;
+
+  if (mode === "cpc"){
+    if (cpc <= 0) return { ok:false, msg:"No modo CPC, preencha o CPC médio com valor maior que zero." };
+    clicks = budget / cpc;
+    effectiveCpc = cpc;
+
+    // se tiver CTR, estimar impressões
+    if (ctr > 0){
+      impressions = clicks / ctr;
+    } else {
+      impressions = 0; // desconhecido
+    }
+  } else {
+    if (cpm <= 0) return { ok:false, msg:"No modo CPM, preencha o CPM médio com valor maior que zero." };
+    if (ctr <= 0) return { ok:false, msg:"No modo CPM, o CTR é obrigatório (para converter impressões em cliques)." };
+
+    impressions = (budget / cpm) * 1000;
+    clicks = impressions * ctr;
+
+    // CPC efetivo derivado
+    effectiveCpc = clicks > 0 ? (budget / clicks) : 0;
+  }
+
+  const conversions = clicks * conv;
+  const revenue = conversions * ticket;
+
+  const roas = budget > 0 ? (revenue / budget) : 0;
+  const cpa = conversions > 0 ? (budget / conversions) : 0;
+
+  // Margem / lucro / ROI
+  let profit = null;
+  let roi = null;
+  let breakevenRevenue = null;
+  let breakevenCpa = null;
+  let breakevenSales = null;
+
+  if (marginPct > 0){
+    const margin = marginPct / 100;
+    const grossProfit = revenue * margin; // lucro bruto
+    profit = grossProfit - budget;
+    roi = budget > 0 ? (profit / budget) : 0;
+
+    breakevenRevenue = budget / margin; // receita necessária para empatar
+    breakevenCpa = cpa; // custo por venda atual (pra comparar)
+    breakevenSales = ticket > 0 ? (breakevenRevenue / ticket) : null; // vendas necessárias para empatar
+  }
+
+  return {
+    ok:true, mode, period,
+    budget, cpc, cpm, ctrPct, convPct, ticket, marginPct,
+    clicks, impressions, effectiveCpc,
+    conversions, revenue, roas, cpa,
+    profit, roi, breakevenRevenue, breakevenSales
+  };
+}
+
+function calcular(){
+  const r = calc();
+  if (!r.ok){ alert(r.msg); return; }
+
+  // KPIs
+  document.getElementById("kpiRevenue").textContent = formatMoney(r.revenue);
+  document.getElementById("kpiRoas").textContent = r.roas.toFixed(2) + "x";
+  document.getElementById("kpiCpa").textContent = r.conversions > 0 ? formatMoney(r.cpa) : "—";
+
+  document.getElementById("kpiClicks").textContent = formatInt(r.clicks);
+  document.getElementById("kpiImpr").textContent = r.impressions > 0 ? formatInt(r.impressions) : "—";
+  document.getElementById("kpiConv").textContent = formatInt(r.conversions);
+
+  const badge = qualityBadge(r.roas, r.roi);
+  document.getElementById("badgeQuality").textContent = badge;
+
+  const modeLabel = r.mode === "cpc" ? "CPC" : "CPM";
+  const extra = r.impressions > 0 ? ` • Impressões estimadas: ${formatInt(r.impressions)}` : "";
+  document.getElementById("statusLine").textContent =
+    `Modelo: ${modeLabel} • Período: ${r.period} • Investimento: ${formatMoney(r.budget)} • CPC efetivo: ${r.effectiveCpc > 0 ? formatMoney(r.effectiveCpc) : "—"}${extra}`;
+
+  // Insights & tips
+  const insights = [];
+  const tips = [];
+
+  // ROAS
+  if (r.roas >= 4){
+    insights.push(`ROAS forte (${r.roas.toFixed(2)}x). Tendência de campanha saudável.`);
+  } else if (r.roas >= 2){
+    insights.push(`ROAS bom (${r.roas.toFixed(2)}x). Dá para escalar com cuidado.`);
+  } else if (r.roas >= 1){
+    insights.push(`ROAS no limite (${r.roas.toFixed(2)}x). Ajustes finos podem virar o jogo.`);
+  } else {
+    insights.push(`ROAS baixo (${r.roas.toFixed(2)}x). Provável necessidade de otimização agressiva.`);
+  }
+
+  // CTR
+  if (r.ctrPct <= 0){
+    tips.push("Preencha o CTR para estimar impressões e avaliar qualidade do criativo.");
+  } else if (r.ctrPct < 1){
+    tips.push("CTR baixo: teste novos criativos, ganchos e ângulos (principalmente acima da dobra).");
+  } else if (r.ctrPct < 2.5){
+    tips.push("CTR ok: tente variações de criativo + promessa mais clara para ganhar eficiência.");
+  } else {
+    tips.push("CTR bom: preserve o que funciona e teste variações para manter performance.");
+  }
+
+  // Conversão
+  if (r.convPct < 1){
+    insights.push(`Conversão baixa (${formatPct(r.convPct)}). O gargalo pode ser a página/oferta.`);
+    tips.push("Melhore landing: prova social, CTA claro, velocidade, copy e oferta.");
+  } else if (r.convPct < 3){
+    insights.push(`Conversão ok (${formatPct(r.convPct)}). Ainda dá para otimizar UX e oferta.`);
+    tips.push("Teste headline, formulário, WhatsApp, e reforço de benefício/diferencial.");
+  } else {
+    insights.push(`Conversão alta (${formatPct(r.convPct)}). Atenção para escalar sem perder qualidade.`);
+    tips.push("Ao escalar orçamento, monitore CPA e frequência/overdelivery.");
+  }
+
+  // CPA vs ticket (sanidade)
+  if (r.conversions > 0){
+    const cpaToTicket = r.cpa / r.ticket;
+    if (cpaToTicket > 0.5){
+      tips.push("CPA alto vs ticket: reveja oferta/upsell/LTV ou otimize segmentação e landing.");
+    } else {
+      tips.push("CPA parece coerente vs ticket. Escala gradual pode funcionar.");
+    }
+  } else {
+    tips.push("Sem conversões: valide tracking, evento/pixel e revise funil de conversão.");
+  }
+
+  // Margem/ROI (se tiver)
+  if (r.marginPct > 0){
+    const roiPct = r.roi * 100;
+    if (roiPct >= 50) insights.push(`ROI (com margem) muito bom: ${roiPct.toFixed(1)}%.`);
+    else if (roiPct >= 0) insights.push(`ROI (com margem) positivo: ${roiPct.toFixed(1)}%.`);
+    else insights.push(`ROI (com margem) negativo: ${roiPct.toFixed(1)}%.`);
+
+    if (r.breakevenRevenue !== null){
+      tips.push(`Ponto de equilíbrio (com margem): precisa faturar ~ ${formatMoney(r.breakevenRevenue)} no período para empatar.`);
+      if (r.breakevenSales !== null){
+        tips.push(`Isso equivale a ~ ${formatInt(r.breakevenSales)} vendas (ticket atual).`);
+      }
+    }
+  } else {
+    tips.push("Se você preencher a margem, calculamos lucro, ROI real e ponto de equilíbrio.");
+  }
+
+  // render lists
+  const insightsList = document.getElementById("insightsList");
+  insightsList.innerHTML = "";
+  insights.forEach(t => {
+    const li = document.createElement("li");
+    li.textContent = t;
+    insightsList.appendChild(li);
+  });
+
+  const tipsList = document.getElementById("tipsList");
+  tipsList.innerHTML = "";
+  tips.forEach(t => {
+    const li = document.createElement("li");
+    li.textContent = t;
+    tipsList.appendChild(li);
+  });
+
+  // Breakdown
+  const bd = document.getElementById("breakdownBox");
+  bd.innerHTML = "";
+
+  const rows = [];
+
+  if (r.mode === "cpc"){
+    rows.push({k:"Cliques", v:`Orçamento ÷ CPC = ${formatMoney(r.budget)} ÷ ${formatMoney(r.cpc)} = ${formatInt(r.clicks)}`});
+    if (r.ctrPct > 0){
+      rows.push({k:"Impressões", v:`Cliques ÷ CTR = ${formatInt(r.clicks)} ÷ ${formatPct(r.ctrPct)} = ${formatInt(r.impressions)}`});
+    } else {
+      rows.push({k:"Impressões", v:`Não estimadas (CTR não informado)`});
+    }
+  } else {
+    rows.push({k:"Impressões", v:`(Orçamento ÷ CPM) × 1000 = (${formatMoney(r.budget)} ÷ ${formatMoney(r.cpm)}) × 1000 = ${formatInt(r.impressions)}`});
+    rows.push({k:"Cliques", v:`Impressões × CTR = ${formatInt(r.impressions)} × ${formatPct(r.ctrPct)} = ${formatInt(r.clicks)}`});
+    rows.push({k:"CPC efetivo", v:`Orçamento ÷ Cliques = ${formatMoney(r.budget)} ÷ ${formatInt(r.clicks)} = ${formatMoney(r.effectiveCpc)}`});
+  }
+
+  rows.push({k:"Conversões", v:`Cliques × Conversão = ${formatInt(r.clicks)} × ${formatPct(r.convPct)} = ${formatInt(r.conversions)}`});
+  rows.push({k:"Receita", v:`Conversões × Ticket = ${formatInt(r.conversions)} × ${formatMoney(r.ticket)} = ${formatMoney(r.revenue)}`});
+  rows.push({k:"ROAS", v:`Receita ÷ Investimento = ${formatMoney(r.revenue)} ÷ ${formatMoney(r.budget)} = ${r.roas.toFixed(2)}x`});
+  rows.push({k:"CPA", v:`Investimento ÷ Conversões = ${formatMoney(r.budget)} ÷ ${formatInt(r.conversions)} = ${r.conversions>0?formatMoney(r.cpa):"—"}`});
+
+  if (r.marginPct > 0){
+    const margin = r.marginPct / 100;
+    const grossProfit = r.revenue * margin;
+    rows.push({k:"Lucro bruto", v:`Receita × Margem = ${formatMoney(r.revenue)} × ${formatPct(r.marginPct)} = ${formatMoney(grossProfit)}`});
+    rows.push({k:"Lucro líquido", v:`Lucro bruto − Investimento = ${formatMoney(grossProfit)} − ${formatMoney(r.budget)} = ${formatMoney(r.profit)}`});
+    rows.push({k:"ROI", v:`(Lucro líquido ÷ Investimento) = ${formatMoney(r.profit)} ÷ ${formatMoney(r.budget)} = ${(r.roi*100).toFixed(1)}%`});
+    rows.push({k:"Breakeven", v:`Receita para empatar = Investimento ÷ Margem = ${formatMoney(r.budget)} ÷ ${formatPct(r.marginPct)} = ${formatMoney(r.breakevenRevenue)}`});
+  }
+
+  rows.forEach(x => {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `
+      <div style="flex:1;">
+        <span class="tag">${x.k}</span>
+        <p class="mini" style="margin-top:8px;">${x.v}</p>
+      </div>
+    `;
+    bd.appendChild(row);
+  });
+
+  // Export
+  const exportText =
+`Simulador ROI – Tráfego Pago (${modeLabel})
+Período: ${r.period}
+
+Entradas:
+- Orçamento: ${formatMoney(r.budget)}
+- ${modeLabel}: ${r.mode==="cpc" ? formatMoney(r.cpc) : formatMoney(r.cpm)}
+- CTR: ${r.ctrPct > 0 ? formatPct(r.ctrPct) : "—"}
+- Conversão: ${formatPct(r.convPct)}
+- Ticket: ${formatMoney(r.ticket)}
+- Margem: ${r.marginPct > 0 ? formatPct(r.marginPct) : "—"}
+
+Saídas:
+- Impressões: ${r.impressions > 0 ? formatInt(r.impressions) : "—"}
+- Cliques: ${formatInt(r.clicks)}
+- Conversões: ${formatInt(r.conversions)}
+- Receita: ${formatMoney(r.revenue)}
+- ROAS: ${r.roas.toFixed(2)}x
+- CPA: ${r.conversions>0 ? formatMoney(r.cpa) : "—"}
+${r.marginPct>0 ? `- Lucro líquido: ${formatMoney(r.profit)}\n- ROI: ${(r.roi*100).toFixed(1)}%\n- Breakeven (receita): ${formatMoney(r.breakevenRevenue)}` : ""}
+
+Insights:
+${insights.map(i=>"- "+i).join("\n")}
+
+Sugestões:
+${tips.map(i=>"- "+i).join("\n")}
+`;
+  document.getElementById("exportOut").textContent = exportText;
+
+  document.getElementById("result").style.display = "block";
+  setTab("insights");
+}
+
+function copiarRelatorio(){
+  const t = document.getElementById("exportOut")?.textContent || "";
+  if (!t || t === "—"){ alert("Calcule primeiro para gerar o relatório."); return; }
+  copyText(t).then(()=>alert("Relatório copiado!"));
+}
+
+function limpar(){
+  ["budget","cpc","cpm","ctr","conv","ticket","margin"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("mode").value = "cpc";
+  document.getElementById("period").value = "mensal";
+  toggleMode();
+  document.getElementById("result").style.display = "none";
+}
+
+function exemplo(){
+  document.getElementById("mode").value = "cpc";
+  toggleMode();
+  document.getElementById("budget").value = 3000;
+  document.getElementById("cpc").value = 2.5;
+  document.getElementById("ctr").value = 2.0;
+  document.getElementById("conv").value = 2.0;
+  document.getElementById("ticket").value = 250;
+  document.getElementById("margin").value = 40;
+  document.getElementById("period").value = "mensal";
+  calcular();
+}
+
+// init
+toggleMode();
+</script>
+</body>
+</html>
