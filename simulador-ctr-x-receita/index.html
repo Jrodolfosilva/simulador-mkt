@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Simulador CTR x Receita</title>
+
+<style>
+/* ===== ESCOPADO (não briga com o tema do WP) ===== */
+.ctr-tool * { box-sizing: border-box; }
+
+.ctr-tool {
+  font-family: Arial, sans-serif !important;
+  background: #f9f9f9 !important;
+  padding: 20px !important;
+  color: #222 !important;
+}
+
+.ctr-tool .container {
+  max-width: 900px;
+  margin: auto;
+  background: #ffffff !important;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.06);
+  color: #222 !important;
+}
+
+.ctr-tool h1, .ctr-tool h2, .ctr-tool p, .ctr-tool label, .ctr-tool small, .ctr-tool footer, .ctr-tool li, .ctr-tool strong, .ctr-tool span {
+  color: #222 !important;
+}
+
+.ctr-tool h1 { margin: 0 0 8px 0; }
+.ctr-tool p { margin: 0 0 18px 0; color: #333 !important; line-height: 1.5; }
+
+.ctr-tool .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 720px) {
+  .ctr-tool .grid { grid-template-columns: 1fr; }
+}
+
+.ctr-tool .field {
+  background: #fff !important;
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.ctr-tool label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.ctr-tool input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #ffffff !important;
+  color: #222 !important;
+}
+
+.ctr-tool input[type="number"]::placeholder { color: #666 !important; }
+
+.ctr-tool .hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: #666 !important;
+}
+
+.ctr-tool .actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.ctr-tool button {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.ctr-tool .btn-primary {
+  background: #007acc;
+  color: #fff !important;
+}
+
+.ctr-tool .btn-primary:hover { background: #005fa3; }
+
+.ctr-tool .btn-ghost {
+  background: #f1f3f5;
+  color: #222 !important;
+}
+
+.ctr-tool .btn-ghost:hover { background: #e9ecef; }
+
+.ctr-tool .result {
+  margin-top: 20px;
+  background: #eef6ff !important;
+  border-left: 5px solid #007acc;
+  padding: 16px;
+  border-radius: 10px;
+  color: #222 !important;
+}
+
+.ctr-tool .result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 720px) {
+  .ctr-tool .result-grid { grid-template-columns: 1fr; }
+}
+
+.ctr-tool .card {
+  background: #ffffff !important;
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.ctr-tool .card .kpi-title {
+  font-size: 13px;
+  color: #666 !important;
+  margin-bottom: 6px;
+}
+
+.ctr-tool .card .kpi-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #222 !important;
+}
+
+.ctr-tool .muted {
+  color: #666 !important;
+  font-size: 12.5px;
+}
+
+.ctr-tool footer {
+  margin-top: 24px;
+  font-size: 12.5px;
+  color: #777 !important;
+  line-height: 1.45;
+}
+</style>
+</head>
+
+<body>
+<div class="ctr-tool">
+  <div class="container">
+    <h1>Simulador CTR x Receita</h1>
+    <p>
+      Preencha os números abaixo para estimar <strong>Cliques</strong>, <strong>Vendas</strong> e <strong>Receita</strong>.
+      Ótimo para prever impacto de otimizações de SEO, anúncios e CTR em páginas/rankings.
+    </p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="impressions">Impressões</label>
+        <input type="number" id="impressions" placeholder="Ex: 10000" min="0" step="1" />
+        <small class="hint">Quantas vezes sua página/anúncio aparece.</small>
+      </div>
+
+      <div class="field">
+        <label for="ctr">CTR (%)</label>
+        <input type="number" id="ctr" placeholder="Ex: 3.5" min="0" step="0.01" />
+        <small class="hint">Porcentagem que clica após ver.</small>
+      </div>
+
+      <div class="field">
+        <label for="conv">Taxa de conversão (%)</label>
+        <input type="number" id="conv" placeholder="Ex: 2" min="0" step="0.01" />
+        <small class="hint">Porcentagem de cliques que viram venda/lead.</small>
+      </div>
+
+      <div class="field">
+        <label for="ticket">Ticket médio (R$)</label>
+        <input type="number" id="ticket" placeholder="Ex: 150" min="0" step="0.01" />
+        <small class="hint">Valor médio por conversão (venda) ou valor do lead.</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="calcular()">Calcular</button>
+      <button class="btn-ghost" type="button" onclick="limpar()">Limpar</button>
+      <button class="btn-ghost" type="button" onclick="exemplo()">Preencher exemplo</button>
+    </div>
+
+    <div class="result" id="result" style="display:none;">
+      <strong>Resultado estimado</strong>
+      <div class="muted" id="formulaText" style="margin-top:6px;"></div>
+
+      <div class="result-grid" style="margin-top:12px;">
+        <div class="card">
+          <div class="kpi-title">Cliques</div>
+          <div class="kpi-value" id="kpiClicks">—</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Vendas/Conversões</div>
+          <div class="kpi-value" id="kpiSales">—</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Receita</div>
+          <div class="kpi-value" id="kpiRevenue">—</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Dica: aumentos pequenos de CTR podem gerar impacto grande em receita quando há muitas impressões.
+      Use este simulador para comparar cenários (ex.: CTR 2% vs 4%).
+    </footer>
+  </div>
+</div>
+
+<script>
+function n(v) {
+  const x = Number(String(v).replace(",", "."));
+  return Number.isFinite(x) ? x : 0;
+}
+
+function formatInt(x) {
+  return Math.round(x).toLocaleString("pt-BR");
+}
+
+function formatMoney(x) {
+  return x.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function calcular() {
+  const impressions = n(document.getElementById("impressions").value);
+  const ctr = n(document.getElementById("ctr").value) / 100;
+  const conv = n(document.getElementById("conv").value) / 100;
+  const ticket = n(document.getElementById("ticket").value);
+
+  if (impressions <= 0 || ctr <= 0 || conv <= 0 || ticket <= 0) {
+    alert("Preencha todos os campos com valores maiores que zero.");
+    return;
+  }
+
+  const clicks = impressions * ctr;
+  const sales = clicks * conv;
+  const revenue = sales * ticket;
+
+  document.getElementById("kpiClicks").textContent = formatInt(clicks);
+  document.getElementById("kpiSales").textContent = formatInt(sales);
+  document.getElementById("kpiRevenue").textContent = formatMoney(revenue);
+
+  document.getElementById("formulaText").textContent =
+    `Cliques = Impressões × CTR | Vendas = Cliques × Conversão | Receita = Vendas × Ticket`;
+
+  document.getElementById("result").style.display = "block";
+}
+
+function limpar() {
+  ["impressions","ctr","conv","ticket"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("result").style.display = "none";
+}
+
+function exemplo() {
+  document.getElementById("impressions").value = 10000;
+  document.getElementById("ctr").value = 3.5;
+  document.getElementById("conv").value = 2;
+  document.getElementById("ticket").value = 150;
+  calcular();
+}
+</script>
+</body>
+</html>
