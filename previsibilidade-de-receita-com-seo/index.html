@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Previsibilidade de Receita com SEO</title>
+
+<style>
+/* ===== PADRÃO VISUAL + BLINDADO CONTRA CSS DO TEMA ===== */
+.seo-revenue-tool * { box-sizing: border-box; }
+
+.seo-revenue-tool{
+  font-family: Arial, sans-serif !important;
+  background:#f9f9f9 !important;
+  padding:20px !important;
+  color:#222 !important;
+}
+
+.seo-revenue-tool .container{
+  max-width: 900px;
+  margin:auto;
+  background:#fff !important;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.06);
+  color:#222 !important;
+}
+
+.seo-revenue-tool h1,.seo-revenue-tool h2,.seo-revenue-tool p,.seo-revenue-tool label,
+.seo-revenue-tool small,.seo-revenue-tool footer,.seo-revenue-tool li,.seo-revenue-tool strong,
+.seo-revenue-tool span,.seo-revenue-tool div{
+  color:#222 !important;
+}
+
+.seo-revenue-tool h1{ margin:0 0 8px 0; }
+.seo-revenue-tool p{ margin:0 0 18px 0; color:#333 !important; line-height:1.5; }
+
+.seo-revenue-tool .grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+@media (max-width: 720px){
+  .seo-revenue-tool .grid{ grid-template-columns:1fr; }
+}
+
+.seo-revenue-tool .field{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.seo-revenue-tool label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.seo-revenue-tool input[type="number"], .seo-revenue-tool input[type="text"], .seo-revenue-tool select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+  background:#fff !important;
+  color:#222 !important;
+  outline:none;
+}
+
+.seo-revenue-tool input::placeholder{ color:#666 !important; }
+
+.seo-revenue-tool .hint{
+  display:block;
+  margin-top:8px;
+  font-size:12.5px;
+  color:#666 !important;
+  line-height:1.35;
+}
+
+.seo-revenue-tool .actions{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+
+.seo-revenue-tool button{
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.seo-revenue-tool .btn-primary{
+  background:#007acc;
+  color:#fff !important;
+}
+.seo-revenue-tool .btn-primary:hover{ background:#005fa3; }
+
+.seo-revenue-tool .btn-ghost{
+  background:#f1f3f5;
+  color:#222 !important;
+}
+.seo-revenue-tool .btn-ghost:hover{ background:#e9ecef; }
+
+.seo-revenue-tool .result{
+  margin-top:20px;
+  background:#eef6ff !important;
+  border-left:5px solid #007acc;
+  padding:16px;
+  border-radius:10px;
+  color:#222 !important;
+  display:none;
+}
+
+.seo-revenue-tool .result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+@media (max-width: 720px){
+  .seo-revenue-tool .result-grid{ grid-template-columns:1fr; }
+}
+
+.seo-revenue-tool .card{
+  background:#fff !important;
+  border:1px solid #e7e7e7;
+  border-radius:10px;
+  padding:14px;
+}
+
+.seo-revenue-tool .card .kpi-title{
+  font-size:13px;
+  color:#666 !important;
+  margin-bottom:6px;
+}
+
+.seo-revenue-tool .card .kpi-value{
+  font-size:20px;
+  font-weight:800;
+  color:#222 !important;
+}
+
+.seo-revenue-tool .muted{
+  color:#666 !important;
+  font-size:12.5px;
+  line-height:1.4;
+}
+
+.seo-revenue-tool footer{
+  margin-top:24px;
+  font-size:12.5px;
+  color:#777 !important;
+  line-height:1.45;
+}
+
+.seo-revenue-tool .badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:700;
+  border:1px solid #dbe7ff;
+  background:#fff !important;
+  color:#222 !important;
+}
+
+.seo-revenue-tool .note{
+  margin-top:12px;
+  padding:12px;
+  border:1px dashed #cfe0ff;
+  border-radius:10px;
+  background:#fff !important;
+}
+
+.seo-revenue-tool .split{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+@media (max-width: 720px){
+  .seo-revenue-tool .split{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+<div class="seo-revenue-tool">
+  <div class="container">
+    <h1>Previsibilidade de Receita com SEO</h1>
+    <p>
+      Modele um cenário de previsibilidade estimando <strong>tráfego</strong>, <strong>leads</strong>, <strong>vendas</strong> e <strong>receita</strong>.
+      Ótimo para propostas, planejamento e metas de SEO.
+    </p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="traffic">Tráfego orgânico mensal (visitas)</label>
+        <input type="number" id="traffic" placeholder="Ex: 12000" min="0" step="1" />
+        <small class="hint">Sessões/visitas mensais vindas do orgânico.</small>
+      </div>
+
+      <div class="field">
+        <label for="cvr">Taxa de conversão em lead (%)</label>
+        <input type="number" id="cvr" placeholder="Ex: 2" min="0" step="0.01" />
+        <small class="hint">Percentual de visitas orgânicas que viram lead.</small>
+      </div>
+
+      <div class="field">
+        <label for="closeRate">Taxa de fechamento (lead → venda) (%)</label>
+        <input type="number" id="closeRate" placeholder="Ex: 15" min="0" step="0.01" />
+        <small class="hint">Percentual de leads que viram clientes.</small>
+      </div>
+
+      <div class="field">
+        <label for="ticket">Ticket médio por venda (R$)</label>
+        <input type="number" id="ticket" placeholder="Ex: 2000" min="0" step="0.01" />
+        <small class="hint">Valor médio de cada venda (ou LTV médio, se preferir).</small>
+      </div>
+
+      <div class="field">
+        <label for="growth">Crescimento esperado do tráfego (%)</label>
+        <input type="number" id="growth" placeholder="Ex: 25" min="0" step="0.01" />
+        <small class="hint">Projeção de crescimento do tráfego orgânico ao longo do período.</small>
+      </div>
+
+      <div class="field">
+        <label for="months">Período (meses)</label>
+        <input type="number" id="months" placeholder="Ex: 6" min="1" step="1" />
+        <small class="hint">Quantos meses você quer projetar.</small>
+      </div>
+
+      <div class="field">
+        <label for="model">Modelo de crescimento</label>
+        <select id="model">
+          <option value="linear">Linear (crescimento total aplicado no final)</option>
+          <option value="compound">Composto (crescimento mensal equivalente)</option>
+        </select>
+        <small class="hint">Linear = conservador. Composto = aproxima crescimento acumulado.</small>
+      </div>
+
+      <div class="field">
+        <label for="cost">Investimento mensal em SEO (R$) (opcional)</label>
+        <input type="number" id="cost" placeholder="Ex: 3000" min="0" step="0.01" />
+        <small class="hint">Se preencher, calculamos ROI estimado (no mês final e no período).</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="calcular()">Calcular previsibilidade</button>
+      <button class="btn-ghost" type="button" onclick="limpar()">Limpar</button>
+      <button class="btn-ghost" type="button" onclick="exemplo()">Preencher exemplo</button>
+    </div>
+
+    <div class="result" id="result">
+      <strong>Resultado (estimativa)</strong>
+      <div class="muted" id="formulaText" style="margin-top:6px;"></div>
+
+      <div class="result-grid">
+        <div class="card">
+          <div class="kpi-title">Receita atual (mês)</div>
+          <div class="kpi-value" id="kpiCurrentRevenue">—</div>
+          <div class="muted">Base do cenário</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Receita projetada (mês final)</div>
+          <div class="kpi-value" id="kpiFinalRevenue">—</div>
+          <div class="muted"><span class="badge" id="kpiBadge">—</span></div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Ganho (mês final)</div>
+          <div class="kpi-value" id="kpiUplift">—</div>
+          <div class="muted">Final − Atual</div>
+        </div>
+      </div>
+
+      <div class="note">
+        <div class="split">
+          <div>
+            <div class="muted"><strong>Atual (mês):</strong></div>
+            <div class="muted" id="currentBreakdown">—</div>
+          </div>
+          <div>
+            <div class="muted"><strong>Projetado (mês final):</strong></div>
+            <div class="muted" id="finalBreakdown">—</div>
+          </div>
+        </div>
+
+        <div class="muted" id="roiText" style="margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <footer>
+      Observação: previsibilidade depende de qualidade do funil (página, oferta e atendimento). Use estes números como cenário para metas e propostas.
+    </footer>
+  </div>
+</div>
+
+<script>
+function n(v){
+  const x = Number(String(v).replace(",", "."));
+  return Number.isFinite(x) ? x : 0;
+}
+
+function formatInt(x){
+  return Math.round(x).toLocaleString("pt-BR");
+}
+
+function formatMoney(x){
+  return x.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+}
+
+function statusCrescimento(g){
+  if (g <= 0) return "Sem crescimento";
+  if (g < 10) return "Conservador";
+  if (g < 30) return "Moderado";
+  if (g < 60) return "Agressivo";
+  return "Muito agressivo";
+}
+
+function calcularReceita(traffic, cvrPct, closePct, ticket){
+  const cvr = cvrPct / 100;
+  const closeRate = closePct / 100;
+  const leads = traffic * cvr;
+  const vendas = leads * closeRate;
+  const receita = vendas * ticket;
+  return { leads, vendas, receita };
+}
+
+function calcular(){
+  const traffic = n(document.getElementById("traffic").value);
+  const cvrPct = n(document.getElementById("cvr").value);
+  const closePct = n(document.getElementById("closeRate").value);
+  const ticket = n(document.getElementById("ticket").value);
+  const growthPct = n(document.getElementById("growth").value);
+  const months = Math.max(1, Math.round(n(document.getElementById("months").value)));
+  const model = document.getElementById("model").value;
+  const costMonthly = n(document.getElementById("cost").value);
+
+  if (traffic <= 0 || cvrPct <= 0 || closePct <= 0 || ticket <= 0 || months <= 0){
+    alert("Preencha tráfego, conversões, fechamento, ticket e meses com valores maiores que zero.");
+    return;
+  }
+
+  // Receita atual
+  const current = calcularReceita(traffic, cvrPct, closePct, ticket);
+
+  // Tráfego final projetado
+  let finalTraffic = traffic;
+
+  if (growthPct > 0){
+    const growth = growthPct / 100;
+
+    if (model === "linear"){
+      finalTraffic = traffic * (1 + growth);
+      document.getElementById("formulaText").textContent =
+        "Receita = (Tráfego × Conversão) × Fechamento × Ticket. Crescimento linear aplica o aumento total no mês final.";
+    } else {
+      const r = Math.pow(1 + growth, 1 / months) - 1; // taxa mensal equivalente
+      finalTraffic = traffic * Math.pow(1 + r, months);
+      document.getElementById("formulaText").textContent =
+        "Receita = (Tráfego × Conversão) × Fechamento × Ticket. Crescimento composto usa taxa mensal equivalente no período.";
+    }
+  } else {
+    document.getElementById("formulaText").textContent =
+      "Receita = (Tráfego × Conversão) × Fechamento × Ticket.";
+  }
+
+  // Receita final projetada
+  const final = calcularReceita(finalTraffic, cvrPct, closePct, ticket);
+
+  const uplift = final.receita - current.receita;
+
+  document.getElementById("kpiCurrentRevenue").textContent = formatMoney(current.receita);
+  document.getElementById("kpiFinalRevenue").textContent = formatMoney(final.receita);
+  document.getElementById("kpiUplift").textContent = formatMoney(uplift);
+  document.getElementById("kpiBadge").textContent = statusCrescimento(growthPct);
+
+  document.getElementById("currentBreakdown").textContent =
+    `${formatInt(current.leads)} leads → ${formatInt(current.vendas)} vendas → ${formatMoney(current.receita)} / mês`;
+
+  document.getElementById("finalBreakdown").textContent =
+    `${formatInt(final.leads)} leads → ${formatInt(final.vendas)} vendas → ${formatMoney(final.receita)} / mês`;
+
+  // ROI (opcional)
+  const roiEl = document.getElementById("roiText");
+  if (costMonthly > 0){
+    const totalCost = costMonthly * months;
+
+    // Aproximação de receita no período: média entre atual e final (trapézio) * meses
+    const totalRevenueApprox = ((current.receita + final.receita) / 2) * months;
+    const totalProfitApprox = totalRevenueApprox - totalCost;
+
+    const roiPeriod = (totalProfitApprox / totalCost) * 100;
+
+    // ROI do mês final (uplift vs custo mensal)
+    const roiFinal = ((uplift) / costMonthly) * 100;
+
+    roiEl.textContent =
+      `ROI estimado: no mês final ~ ${roiFinal.toFixed(1)}% (ganho mensal ÷ investimento mensal). ` +
+      `No período (~média entre atual e final): ${roiPeriod.toFixed(1)}% (receita estimada no período − custo total ÷ custo total).`;
+  } else {
+    roiEl.textContent = "Se você preencher o investimento mensal em SEO, calculamos ROI estimado.";
+  }
+
+  document.getElementById("result").style.display = "block";
+}
+
+function limpar(){
+  ["traffic","cvr","closeRate","ticket","growth","months","cost"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("model").value = "linear";
+  document.getElementById("result").style.display = "none";
+}
+
+function exemplo(){
+  document.getElementById("traffic").value = 12000;
+  document.getElementById("cvr").value = 2;
+  document.getElementById("closeRate").value = 15;
+  document.getElementById("ticket").value = 2000;
+  document.getElementById("growth").value = 25;
+  document.getElementById("months").value = 6;
+  document.getElementById("model").value = "linear";
+  document.getElementById("cost").value = 3000;
+  calcular();
+}
+</script>
+</body>
+</html>
